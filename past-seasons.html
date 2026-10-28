@@ -1,0 +1,1196 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="theme-color" content="#05070d" />
+        <meta name="description" content="Shell Strike historical season rankings and MVPs." />
+        <title>Past Seasons — Shell Strike</title>
+        <style>
+            :root {
+                --blue: #087bff;
+                --blue2: #3156ff;
+                --ink: #05070d;
+                --white: #f5f7fb;
+                --muted: #9ba8bd;
+                --line: rgba(255, 255, 255, 0.14);
+            }
+            * {
+                box-sizing: border-box;
+            }
+            html {
+                scroll-behavior: smooth;
+                scrollbar-color: var(--blue) #080b13;
+            }
+            body {
+                margin: 0;
+                background: var(--ink);
+                color: var(--white);
+                font-family:
+                    Inter,
+                    ui-sans-serif,
+                    system-ui,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    sans-serif;
+                overflow-x: hidden;
+            }
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+            button,
+            a {
+                -webkit-tap-highlight-color: transparent;
+            }
+            ::selection {
+                background: var(--blue);
+                color: #fff;
+            }
+            .noise {
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 20;
+                opacity: 0.035;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+            }
+            .nav {
+                position: fixed;
+                z-index: 30;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 76px;
+                padding: 0 clamp(20px, 5vw, 76px);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 1px solid transparent;
+                transition:
+                    background 0.3s,
+                    border-color 0.3s;
+            }
+            .nav.scrolled {
+                background: rgba(5, 7, 13, 0.78);
+                backdrop-filter: blur(18px);
+                border-color: var(--line);
+            }
+            .nav-brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 950;
+                letter-spacing: -0.07em;
+                font-size: 20px;
+            }
+            .nav-brand img {
+                width: 35px;
+                height: 35px;
+                object-fit: contain;
+            }
+            .nav-brand span {
+                color: var(--blue);
+            }
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: clamp(18px, 3vw, 42px);
+                font-size: 12px;
+                font-weight: 750;
+                text-transform: uppercase;
+                letter-spacing: 0.11em;
+                color: #c5ccda;
+            }
+            .nav-links a {
+                transition: color 0.2s;
+            }
+            .nav-links a:hover {
+                color: #fff;
+            }
+            .nav-cta,
+            .button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                padding: 14px 20px;
+                background: var(--blue);
+                color: #fff;
+                font-weight: 900;
+                font-size: 12px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                border: 1px solid var(--blue);
+                clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+                transition:
+                    transform 0.2s,
+                    background 0.2s;
+            }
+            .nav-cta:hover,
+            .button:hover {
+                transform: translateY(-3px);
+                background: #3190ff;
+            }
+            .menu-toggle {
+                display: none;
+                background: none;
+                border: 0;
+                color: white;
+                font-size: 25px;
+            }
+            .footer {
+                padding: 28px clamp(22px, 5vw, 76px);
+                border-top: 1px solid var(--line);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+                color: #8f9ab0;
+                font-size: 11px;
+            }
+            .footer-brand {
+                display: inline-flex;
+                align-items: center;
+                flex: 0 0 auto;
+                width: 154px;
+                height: 48px;
+            }
+            .footer-brand img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                object-position: left center;
+            }
+            .footer-links {
+                display: flex;
+                gap: 20px;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-weight: 800;
+            }
+            .footer-links a:hover {
+                color: white;
+            }
+            @media (max-width: 760px) {
+                .nav {
+                    height: 66px;
+                }
+                .nav-links {
+                    display: none;
+                    position: absolute;
+                    top: 65px;
+                    left: 0;
+                    right: 0;
+                    padding: 24px;
+                    background: rgba(5, 7, 13, 0.97);
+                    flex-direction: column;
+                    align-items: flex-start;
+                    border-bottom: 1px solid var(--line);
+                }
+                .nav-links.open {
+                    display: flex;
+                }
+                .nav-cta {
+                    padding: 11px 13px;
+                    font-size: 10px;
+                }
+                .menu-toggle {
+                    display: block;
+                }
+                .hero-scroll {
+                    height: 230vh;
+                }
+                .hero-pin {
+                    min-height: 620px;
+                }
+                .hero-mark {
+                    width: 110vw;
+                    max-width: none;
+                }
+                .hero-copy {
+                    margin-top: clamp(220px, 35vh, 330px);
+                }
+                .hero h1 {
+                    font-size: clamp(42px, 12vw, 76px);
+                }
+                .hero-copy p {
+                    max-width: 390px;
+                }
+                .frame {
+                    inset: 8px;
+                }
+                .intro {
+                    grid-template-columns: 1fr;
+                    gap: 32px;
+                }
+                .intro-visual {
+                    min-height: 260px;
+                }
+                .features-head {
+                    display: block;
+                }
+                .features-head p {
+                    margin-top: 20px;
+                }
+                .feature-grid {
+                    grid-template-columns: 1fr;
+                }
+                .feature-card {
+                    min-height: 230px;
+                }
+                .feature-icon {
+                    margin: 22px 0 18px;
+                }
+                .footer {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                .footer-brand {
+                    width: 132px;
+                    height: 42px;
+                }
+                .footer-links {
+                    flex-wrap: wrap;
+                }
+                .hero-counter {
+                    bottom: 18px;
+                }
+                .scroll-cue {
+                    bottom: 18px;
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                html {
+                    scroll-behavior: auto;
+                }
+                *,
+                *:before,
+                *:after {
+                    animation-duration: 0.01ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.01ms !important;
+                }
+                .hero-scroll {
+                    height: 100vh;
+                }
+                .hero-bg,
+                .hero-content,
+                .hero-mark,
+                .hero-shell-mark,
+                .hero-vignette,
+                .hero-grid,
+                .frame,
+                .scroll-cue,
+                .hero-counter {
+                    opacity: 1 !important;
+                    transform: none !important;
+                }
+            }
+
+            /* Restored simple loader from Smooth Edition */
+            body.ss-loading {
+                overflow: hidden;
+            }
+            .ss-loader {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                background: #05070d;
+                display: grid;
+                place-items: center;
+                overflow: hidden;
+                visibility: visible;
+                opacity: 1;
+                transition:
+                    opacity 0.55s ease,
+                    visibility 0.55s ease;
+            }
+            .ss-loader.is-done {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+            .ss-loader:before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                opacity: 0.2;
+                background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+                background-size: 72px 72px;
+            }
+            .ss-loader-center {
+                position: relative;
+                text-align: center;
+                width: 100%;
+                padding: 24px;
+            }
+            .ss-loader-logo {
+                display: flex;
+                align-items: baseline;
+                justify-content: center;
+                gap: 0.15em;
+                font-family: Impact, "Arial Narrow", sans-serif;
+                font-size: clamp(58px, 12vw, 150px);
+                font-weight: 1000;
+                letter-spacing: -0.045em;
+                white-space: nowrap;
+            }
+            .ss-loader-shell {
+                color: #f5f7fb;
+            }
+            .ss-loader-strike {
+                color: #087bff;
+            }
+            .ss-loader-tag {
+                font:
+                    800 9px ui-monospace,
+                    monospace;
+                letter-spacing: 0.32em;
+                color: #8495ad;
+                margin-top: 22px;
+            }
+            .ss-loader-footer {
+                position: absolute;
+                left: 24px;
+                right: 24px;
+                bottom: 25px;
+                display: flex;
+                justify-content: space-between;
+                font:
+                    700 9px ui-monospace,
+                    monospace;
+                letter-spacing: 0.13em;
+                color: #63718a;
+            }
+            .ss-loader-progress {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                height: 3px;
+                background: rgba(255, 255, 255, 0.08);
+            }
+            .ss-loader-progress i {
+                display: block;
+                width: 0;
+                height: 100%;
+                background: #087bff;
+                box-shadow: 0 0 18px rgba(8, 123, 255, 0.65);
+                animation: ss-simple-progress 2.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+            }
+            @keyframes ss-simple-progress {
+                to {
+                    width: 100%;
+                }
+            }
+            @media (max-width: 700px) {
+                .ss-loader-footer {
+                    left: 12px;
+                    right: 12px;
+                    bottom: 18px;
+                    font-size: 7px;
+                    letter-spacing: 0.06em;
+                }
+                .ss-loader-logo {
+                    font-size: clamp(45px, 11vw, 75px);
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .ss-loader-progress i {
+                    animation-duration: 0.4s;
+                }
+            }
+
+            /* Past Seasons page: matching Shell Strike's homepage visual system */
+            main.past-seasons {
+                min-height: 100vh;
+                padding: 142px clamp(22px, 8vw, 120px) 120px;
+                background: radial-gradient(ellipse at 50% 0%, rgba(8, 123, 255, 0.13), transparent 52%), #05070d;
+            }
+            .page-heading {
+                max-width: 900px;
+                margin: 0 auto 56px;
+                text-align: center;
+            }
+            .page-heading .section-kicker {
+                display: block;
+            }
+            .page-heading .section-title {
+                margin: 18px 0 18px;
+            }
+            .page-heading .intro-copy {
+                max-width: 620px;
+                margin: 0 auto;
+                color: var(--muted);
+                font-size: 15px;
+                line-height: 1.8;
+            }
+            .season-tabs {
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin: 0 auto 42px;
+            }
+            .season-tab {
+                appearance: none;
+                cursor: pointer;
+                padding: 13px 21px;
+                color: #aeb9cb;
+                background: rgba(255, 255, 255, 0.025);
+                border: 1px solid var(--line);
+                font:
+                    800 11px ui-monospace,
+                    monospace;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                transition:
+                    background 0.2s,
+                    border-color 0.2s,
+                    color 0.2s,
+                    transform 0.2s;
+            }
+            .season-tab:hover {
+                color: #fff;
+                border-color: rgba(8, 123, 255, 0.65);
+                transform: translateY(-2px);
+            }
+            .season-tab.active {
+                color: #fff;
+                background: var(--blue);
+                border-color: var(--blue);
+                box-shadow: 0 8px 30px rgba(8, 123, 255, 0.2);
+            }
+            .season-panel {
+                display: none;
+                max-width: 1100px;
+                margin: 0 auto;
+            }
+            .season-panel.active {
+                display: block;
+                animation: season-in 0.4s ease both;
+            }
+            @keyframes season-in {
+                from {
+                    opacity: 0;
+                    transform: translateY(12px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            .season-panel-head {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                gap: 24px;
+                margin-bottom: 24px;
+            }
+            .season-panel-head h2 {
+                margin: 10px 0 0;
+                font-size: clamp(26px, 4vw, 44px);
+                line-height: 1;
+                letter-spacing: -0.06em;
+                text-transform: uppercase;
+            }
+            .season-panel-head p {
+                margin: 12px 0 0;
+                color: var(--muted);
+                font-size: 13px;
+                line-height: 1.7;
+            }
+            .season-status {
+                flex: 0 0 auto;
+                padding: 10px 12px;
+                color: #b8d8ff;
+                border: 1px solid rgba(8, 123, 255, 0.42);
+                background: rgba(8, 123, 255, 0.08);
+                font:
+                    800 10px ui-monospace,
+                    monospace;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+            }
+            .season-status b {
+                color: #fff;
+            }
+            .champion-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 12px;
+                margin-bottom: 16px;
+            }
+            .champion-card {
+                min-width: 0;
+                position: relative;
+                padding: 26px 23px 24px;
+                overflow: hidden;
+                border: 1px solid var(--line);
+                background: linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012));
+            }
+            .champion-card::after {
+                content: "";
+                position: absolute;
+                right: -43px;
+                bottom: -58px;
+                width: 125px;
+                height: 125px;
+                border: 1px solid rgba(8, 123, 255, 0.2);
+                transform: rotate(45deg);
+                pointer-events: none;
+            }
+            .champion-card.first {
+                border-color: rgba(8, 123, 255, 0.68);
+                background: radial-gradient(ellipse at 50% 0%, rgba(8, 123, 255, 0.2), transparent 75%),
+                    linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.012));
+            }
+            .champion-card.first::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                height: 3px;
+                background: var(--blue);
+                box-shadow: 0 0 18px rgba(8, 123, 255, 0.65);
+            }
+            .champion-meta {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                margin-bottom: 26px;
+                color: #a8b5ca;
+                font:
+                    800 10px ui-monospace,
+                    monospace;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+            }
+            .mvp-badge {
+                padding: 6px 8px;
+                color: white;
+                background: var(--blue);
+                font-size: 9px;
+                letter-spacing: 0.1em;
+            }
+            .champion-name {
+                position: relative;
+                z-index: 1;
+                overflow-wrap: anywhere;
+                font-size: clamp(18px, 2.2vw, 27px);
+                font-weight: 950;
+                letter-spacing: -0.05em;
+            }
+            .champion-score {
+                margin-top: 10px;
+                color: var(--muted);
+                font:
+                    700 10px ui-monospace,
+                    monospace;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+            }
+            .champion-score strong {
+                margin-right: 6px;
+                color: #fff;
+                font:
+                    900 21px ui-sans-serif,
+                    system-ui,
+                    sans-serif;
+                letter-spacing: -0.04em;
+            }
+            .leaderboard {
+                border: 1px solid var(--line);
+                background: rgba(255, 255, 255, 0.018);
+            }
+            .leaderboard-head,
+            .leaderboard-row {
+                display: grid;
+                grid-template-columns: 90px minmax(0, 1fr) 140px;
+                align-items: center;
+                gap: 12px;
+                padding: 16px 22px;
+            }
+            .leaderboard-head {
+                color: #7f8da4;
+                background: rgba(255, 255, 255, 0.035);
+                border-bottom: 1px solid var(--line);
+                font:
+                    800 10px ui-monospace,
+                    monospace;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
+            }
+            .leaderboard-head span:last-child,
+            .elo-value {
+                text-align: right;
+            }
+            .leaderboard-row {
+                min-height: 55px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+                transition: background 0.2s;
+            }
+            .leaderboard-row:last-child {
+                border-bottom: 0;
+            }
+            .leaderboard-row:hover {
+                background: rgba(8, 123, 255, 0.07);
+            }
+            .row-rank {
+                color: #8291a8;
+                font:
+                    800 12px ui-monospace,
+                    monospace;
+            }
+            .row-player {
+                min-width: 0;
+                overflow-wrap: anywhere;
+                font-size: 13px;
+                font-weight: 800;
+            }
+            .elo-value {
+                color: #f5f7fb;
+                font:
+                    900 13px ui-monospace,
+                    monospace;
+                font-variant-numeric: tabular-nums;
+            }
+            .elo-value::after {
+                content: " ELO";
+                color: #77869c;
+                font-size: 9px;
+                letter-spacing: 0.1em;
+            }
+            .season-footnote {
+                margin-top: 14px;
+                color: #75839a;
+                font:
+                    700 10px ui-monospace,
+                    monospace;
+                letter-spacing: 0.08em;
+                line-height: 1.7;
+                text-transform: uppercase;
+            }
+            @media (max-width: 760px) {
+                main.past-seasons {
+                    padding: 112px 20px 80px;
+                }
+                .page-heading {
+                    margin-bottom: 38px;
+                }
+                .season-panel-head {
+                    align-items: flex-start;
+                    flex-direction: column;
+                }
+                .champion-grid {
+                    grid-template-columns: 1fr;
+                }
+                .champion-card {
+                    padding: 21px 20px;
+                }
+                .champion-meta {
+                    margin-bottom: 15px;
+                }
+                .leaderboard-head,
+                .leaderboard-row {
+                    grid-template-columns: 52px minmax(0, 1fr) 90px;
+                    padding-left: 14px;
+                    padding-right: 14px;
+                }
+                .leaderboard-head {
+                    font-size: 9px;
+                }
+                .row-player {
+                    font-size: 12px;
+                }
+                .elo-value {
+                    font-size: 12px;
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .season-panel.active {
+                    animation: none;
+                }
+            }
+
+            .nav-actions {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
+            .nav-links a[aria-current="page"] {
+                color: #fff;
+            }
+            .nav-links a[aria-current="page"]::after {
+                content: "";
+                display: block;
+                height: 2px;
+                margin-top: 7px;
+                background: var(--blue);
+            }
+            @media (max-width: 760px) {
+                .nav-actions {
+                    margin-left: auto;
+                }
+                .nav-cta {
+                    padding: 11px 13px;
+                    font-size: 10px;
+                }
+            }
+
+            /* Final alignment pass: match the shared Shell Strike homepage header and typography */
+            .nav-brand-image {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                width: 154px;
+                height: 56px;
+                flex: 0 0 auto;
+                gap: 0;
+            }
+            .nav-brand-image img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+                object-position: left center;
+            }
+            .nav-links a[aria-current="page"] {
+                color: #fff;
+            }
+            .nav-links a[aria-current="page"]::after {
+                display: none !important;
+                content: none !important;
+            }
+            .page-heading {
+                max-width: 1400px;
+                margin: 0 auto 70px;
+                padding: 70px 0 0;
+                text-align: left;
+            }
+            .page-heading .section-kicker {
+                display: block;
+                margin-bottom: 28px;
+            }
+            .season-hero-title {
+                margin: 0 0 30px;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                font-family:
+                    Inter,
+                    ui-sans-serif,
+                    system-ui,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    sans-serif;
+                font-size: clamp(76px, 13.2vw, 210px);
+                font-weight: 1000;
+                line-height: 0.79;
+                letter-spacing: -0.085em;
+                text-transform: uppercase;
+                overflow-wrap: normal;
+            }
+            .season-title-solid {
+                color: var(--white);
+            }
+            .season-title-outline {
+                color: transparent;
+                -webkit-text-stroke: 1.5px rgba(245, 247, 251, 0.78);
+                text-stroke: 1.5px rgba(245, 247, 251, 0.78);
+            }
+            .page-heading .intro-copy {
+                max-width: 610px;
+                margin: 34px 0 0;
+                color: var(--muted);
+                font-size: 16px;
+                line-height: 1.8;
+            }
+            .past-seasons {
+                position: relative;
+                padding-top: 76px;
+                padding-left: clamp(22px, 8vw, 120px);
+                padding-right: clamp(22px, 8vw, 120px);
+                background: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+                    radial-gradient(ellipse at 72% 0%, rgba(8, 123, 255, 0.12), transparent 54%);
+                background-size:
+                    64px 64px,
+                    64px 64px,
+                    auto;
+            }
+            @media (max-width: 760px) {
+                .nav-brand-image {
+                    width: 118px;
+                    height: 48px;
+                }
+                .page-heading {
+                    padding-top: 48px;
+                    margin-bottom: 48px;
+                }
+                .page-heading .section-kicker {
+                    margin-bottom: 22px;
+                }
+                .season-hero-title {
+                    font-size: clamp(62px, 15vw, 112px);
+                    line-height: 0.84;
+                    letter-spacing: -0.075em;
+                }
+                .season-title-outline {
+                    -webkit-text-stroke-width: 1px;
+                }
+                .page-heading .intro-copy {
+                    margin-top: 26px;
+                    font-size: 14px;
+                }
+                .past-seasons {
+                    padding-top: 66px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="ss-loader" id="ssLoader" aria-label="Loading Shell Strike">
+            <div class="ss-loader-center">
+                <div class="ss-loader-logo">
+                    <span class="ss-loader-shell">SHELL</span><span class="ss-loader-strike">STRIKE</span>
+                </div>
+                <div class="ss-loader-tag">LOCK IN. WIN BIG.</div>
+            </div>
+            <div class="ss-loader-footer"><span>SHELL STRIKE // ARENA SYSTEM</span><span>INITIALIZING</span></div>
+            <div class="ss-loader-progress"><i id="ssLoaderProgress"></i></div>
+        </div>
+        <div class="noise"></div>
+        <header class="nav" id="nav">
+            <a class="nav-brand nav-brand-image" href="index.html" aria-label="Shell Strike home"
+                ><img src="assets/logo.png" alt="Shell Strike logo"
+            /></a>
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html">Home</a>
+                <a href="past-seasons.html" aria-current="page">Past Seasons</a>
+            </nav>
+            <div class="nav-actions">
+                <a
+                    class="nav-cta"
+                    href="https://discord.gg/shell-strike-ranked-1470482329075060831"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    >Enter the arena <span>↗</span></a
+                >
+                <button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false">
+                    ☰
+                </button>
+            </div>
+        </header>
+
+        <main class="past-seasons" id="top">
+            <div class="page-heading">
+                <span class="section-kicker">Shell Strike / Seasonal archive</span>
+                <h1 class="season-hero-title">
+                    <span class="season-title-solid">PAST</span><span class="season-title-outline">SEASONS.</span>
+                </h1>
+                <p class="intro-copy">
+                    Every season leaves a legacy. Explore the final rankings, see who finished on top, and revisit the
+                    players who made their mark on Shell Strike.
+                </p>
+            </div>
+            <div class="season-tabs" role="tablist" aria-label="Select a season">
+                <button
+                    class="season-tab active"
+                    id="tab-1"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="season-1"
+                    data-season="1"
+                >
+                    Season 01
+                </button>
+                <button
+                    class="season-tab"
+                    id="tab-2"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="season-2"
+                    data-season="2"
+                >
+                    Season 02
+                </button>
+                <button
+                    class="season-tab"
+                    id="tab-3"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="season-3"
+                    data-season="3"
+                >
+                    Season 03
+                </button>
+            </div>
+
+            <section class="season-panel active" id="season-1" role="tabpanel" aria-labelledby="tab-1">
+                <div class="season-panel-head">
+                    <div>
+                        <div class="section-kicker">Season 01 / Final standings</div>
+                        <h2>Season 01<br /><span class="outline">Final rankings.</span></h2>
+                        <p>Final top 10 players ranked by season ELO.</p>
+                    </div>
+                    <div class="season-status">Season MVP <b>// astonx7</b></div>
+                </div>
+                <div class="champion-grid">
+                    <article class="champion-card">
+                        <div class="champion-meta"><span>#02 / Runner-up</span></div>
+                        <div class="champion-name">bugggsbun</div>
+                        <div class="champion-score"><strong>2,330</strong> Final ELO</div>
+                    </article>
+                    <article class="champion-card first">
+                        <div class="champion-meta"><span>#01 / Champion</span><span class="mvp-badge">MVP</span></div>
+                        <div class="champion-name">astonx7</div>
+                        <div class="champion-score"><strong>2,646</strong> Final ELO</div>
+                    </article>
+                    <article class="champion-card">
+                        <div class="champion-meta"><span>#03 / Third place</span></div>
+                        <div class="champion-name">datone05</div>
+                        <div class="champion-score"><strong>2,073</strong> Final ELO</div>
+                    </article>
+                </div>
+                <div class="leaderboard">
+                    <div class="leaderboard-head"><span>Rank</span><span>Player</span><span>ELO</span></div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#04</span><span class="row-player">skizor04</span
+                        ><span class="elo-value">1,656</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#05</span><span class="row-player">seek18</span
+                        ><span class="elo-value">1,403</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#06</span><span class="row-player">nz.2023</span
+                        ><span class="elo-value">947</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#07</span><span class="row-player">h1m.23</span
+                        ><span class="elo-value">891</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#08</span><span class="row-player">666will</span
+                        ><span class="elo-value">771</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#09</span><span class="row-player">shinn65</span
+                        ><span class="elo-value">702</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#10</span><span class="row-player">noobnoob423</span
+                        ><span class="elo-value">680</span>
+                    </div>
+                </div>
+                <div class="season-footnote">Shell Strike // Historical rankings · Season 01</div>
+            </section>
+
+            <section class="season-panel" id="season-2" role="tabpanel" aria-labelledby="tab-2">
+                <div class="season-panel-head">
+                    <div>
+                        <div class="section-kicker">Season 02 / Final standings</div>
+                        <h2>Season 02<br /><span class="outline">Final rankings.</span></h2>
+                        <p>Final top 10 players ranked by season ELO.</p>
+                    </div>
+                    <div class="season-status">Season MVP <b>// instro4647</b></div>
+                </div>
+                <div class="champion-grid">
+                    <article class="champion-card">
+                        <div class="champion-meta"><span>#02 / Runner-up</span></div>
+                        <div class="champion-name">minion98789</div>
+                        <div class="champion-score"><strong>4,399</strong> Final ELO</div>
+                    </article>
+                    <article class="champion-card first">
+                        <div class="champion-meta"><span>#01 / Champion</span><span class="mvp-badge">MVP</span></div>
+                        <div class="champion-name">instro4647</div>
+                        <div class="champion-score"><strong>4,974</strong> Final ELO</div>
+                    </article>
+                    <article class="champion-card">
+                        <div class="champion-meta"><span>#03 / Third place</span></div>
+                        <div class="champion-name">yornine</div>
+                        <div class="champion-score"><strong>4,372</strong> Final ELO</div>
+                    </article>
+                </div>
+                <div class="leaderboard">
+                    <div class="leaderboard-head"><span>Rank</span><span>Player</span><span>ELO</span></div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#04</span><span class="row-player">datone05</span
+                        ><span class="elo-value">4,054</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#05</span><span class="row-player">virojet</span
+                        ><span class="elo-value">3,828</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#06</span><span class="row-player">seek18</span
+                        ><span class="elo-value">3,516</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#07</span><span class="row-player">ocenoob</span
+                        ><span class="elo-value">3,494</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#08</span><span class="row-player">bugggsbun</span
+                        ><span class="elo-value">3,292</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#09</span><span class="row-player">motherclucker1</span
+                        ><span class="elo-value">3,236</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#10</span><span class="row-player">tnpinkpanda57808</span
+                        ><span class="elo-value">3,233</span>
+                    </div>
+                </div>
+                <div class="season-footnote">Shell Strike // Historical rankings · Season 02</div>
+            </section>
+
+            <section class="season-panel" id="season-3" role="tabpanel" aria-labelledby="tab-3">
+                <div class="season-panel-head">
+                    <div>
+                        <div class="section-kicker">Season 03 / Final standings</div>
+                        <h2>Season 03<br /><span class="outline">Final rankings.</span></h2>
+                        <p>Final top 10 players ranked by season ELO.</p>
+                    </div>
+                    <div class="season-status">Season MVP <b>// notzyne</b></div>
+                </div>
+                <div class="champion-grid">
+                    <article class="champion-card">
+                        <div class="champion-meta"><span>#02 / Runner-up</span></div>
+                        <div class="champion-name">seakoala0919</div>
+                        <div class="champion-score"><strong>6,426</strong> Final ELO</div>
+                    </article>
+                    <article class="champion-card first">
+                        <div class="champion-meta"><span>#01 / Champion</span><span class="mvp-badge">MVP</span></div>
+                        <div class="champion-name">notzyne</div>
+                        <div class="champion-score"><strong>7,189</strong> Final ELO</div>
+                    </article>
+                    <article class="champion-card">
+                        <div class="champion-meta"><span>#03 / Third place</span></div>
+                        <div class="champion-name">minion98789</div>
+                        <div class="champion-score"><strong>5,225</strong> Final ELO</div>
+                    </article>
+                </div>
+                <div class="leaderboard">
+                    <div class="leaderboard-head"><span>Rank</span><span>Player</span><span>ELO</span></div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#04</span><span class="row-player">Unknown User</span
+                        ><span class="elo-value">4,639</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#05</span><span class="row-player">imdprasad</span
+                        ><span class="elo-value">4,189</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#06</span><span class="row-player">Unknown User</span
+                        ><span class="elo-value">4,050</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#07</span><span class="row-player">prime.venter</span
+                        ><span class="elo-value">3,902</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#08</span><span class="row-player">skizor04</span
+                        ><span class="elo-value">3,652</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#09</span><span class="row-player">thesorryguy</span
+                        ><span class="elo-value">3,617</span>
+                    </div>
+                    <div class="leaderboard-row">
+                        <span class="row-rank">#10</span><span class="row-player">novabreh</span
+                        ><span class="elo-value">3,528</span>
+                    </div>
+                </div>
+                <div class="season-footnote">Shell Strike // Historical rankings · Season 03</div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <a class="footer-brand" href="index.html" aria-label="Shell Strike home"
+                ><img src="assets/logo.png" alt="Shell Strike logo" loading="lazy"
+            /></a>
+            <span>Built and Managed by skizor04. © <span id="year"></span> Shell Strike.</span>
+            <div class="footer-links">
+                <a href="index.html">Home</a><a href="past-seasons.html" aria-current="page">Past Seasons</a>
+            </div>
+        </footer>
+
+        <script>
+            (() => {
+                const ssLoader = document.getElementById("ssLoader");
+                const ssProgress = document.getElementById("ssLoaderProgress");
+                let ssLoaderDismissStarted = false;
+                function dismissShellStrikeLoader() {
+                    if (!ssLoader || ssLoaderDismissStarted) return;
+                    ssLoaderDismissStarted = true;
+                    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                    const duration = reduced ? 400 : 2600;
+                    if (ssProgress) {
+                        ssProgress.style.animation = "none";
+                        ssProgress.style.width = "0";
+                        void ssProgress.offsetWidth;
+                        ssProgress.style.transition = `width ${duration}ms cubic-bezier(.65,0,.35,1)`;
+                        requestAnimationFrame(() => {
+                            ssProgress.style.width = "100%";
+                        });
+                    }
+                    window.setTimeout(() => {
+                        ssLoader.classList.add("is-done");
+                        document.body.classList.remove("ss-loading");
+                    }, duration + 80);
+                }
+                if (document.readyState === "complete") dismissShellStrikeLoader();
+                else window.addEventListener("load", dismissShellStrikeLoader, { once: true });
+                window.setTimeout(dismissShellStrikeLoader, 4500);
+
+                const nav = document.getElementById("nav");
+                const updateNav = () => nav.classList.toggle("scrolled", window.scrollY > 30);
+                window.addEventListener("scroll", updateNav, { passive: true });
+                updateNav();
+
+                const toggle = document.getElementById("menuToggle");
+                const links = document.getElementById("navLinks");
+                toggle.addEventListener("click", () => {
+                    links.classList.toggle("open");
+                    const isOpen = links.classList.contains("open");
+                    toggle.textContent = isOpen ? "×" : "☰";
+                    toggle.setAttribute("aria-expanded", String(isOpen));
+                });
+                links.querySelectorAll("a").forEach((a) =>
+                    a.addEventListener("click", () => {
+                        links.classList.remove("open");
+                        toggle.textContent = "☰";
+                        toggle.setAttribute("aria-expanded", "false");
+                    })
+                );
+
+                document.querySelectorAll(".season-tab").forEach((tab) =>
+                    tab.addEventListener("click", () => {
+                        document.querySelectorAll(".season-tab").forEach((other) => {
+                            const active = other === tab;
+                            other.classList.toggle("active", active);
+                            other.setAttribute("aria-selected", String(active));
+                        });
+                        document.querySelectorAll(".season-panel").forEach((panel) => {
+                            panel.classList.toggle("active", panel.id === `season-${tab.dataset.season}`);
+                        });
+                    })
+                );
+                document.getElementById("year").textContent = new Date().getFullYear();
+            })();
+        </script>
+    </body>
+</html>
+
