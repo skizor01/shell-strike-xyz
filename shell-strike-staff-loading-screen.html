@@ -1,0 +1,1056 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#05070d" />
+        <meta name="description" content="Meet the team behind Shell Strike." />
+        <title>Staff | Shell Strike</title>
+        <style>
+            :root {
+                --blue: #087bff;
+                --blue2: #3156ff;
+                --ink: #05070d;
+                --white: #f5f7fb;
+                --muted: #9ba8bd;
+                --line: rgba(255, 255, 255, 0.14);
+            }
+            * {
+                box-sizing: border-box;
+            }
+            html {
+                scroll-behavior: smooth;
+                scrollbar-color: var(--blue) #080b13;
+            }
+            body {
+                margin: 0;
+                background: var(--ink);
+                color: var(--white);
+                font-family:
+                    Inter,
+                    ui-sans-serif,
+                    system-ui,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    sans-serif;
+                overflow-x: hidden;
+            }
+            a {
+                color: inherit;
+                text-decoration: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+            ::selection {
+                background: var(--blue);
+                color: #fff;
+            }
+            .noise {
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 20;
+                opacity: 0.025;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+            }
+            .nav {
+                position: sticky;
+                top: 0;
+                z-index: 30;
+                height: 76px;
+                padding: 0 clamp(20px, 5vw, 76px);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: rgba(5, 7, 13, 0.82);
+                backdrop-filter: blur(18px);
+                border-bottom: 1px solid var(--line);
+            }
+            .nav-brand {
+                display: flex;
+                align-items: center;
+                width: 154px;
+                height: 56px;
+                flex: 0 0 auto;
+            }
+            .nav-brand img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: clamp(14px, 2.3vw, 32px);
+                font-size: 11px;
+                font-weight: 850;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: #c5ccda;
+            }
+            .nav-links a {
+                transition: color 0.2s;
+            }
+            .nav-links a:hover {
+                color: #fff;
+            }
+            .nav-cta,
+            .button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                padding: 13px 18px;
+                background: var(--blue);
+                color: #fff;
+                font-weight: 900;
+                font-size: 11px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                border: 1px solid var(--blue);
+                clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+                transition:
+                    transform 0.2s,
+                    background 0.2s;
+            }
+            .nav-cta:hover,
+            .button:hover {
+                transform: translateY(-3px);
+                background: #3190ff;
+            }
+            .menu-toggle {
+                display: none;
+                background: none;
+                border: 0;
+                color: white;
+                font-size: 25px;
+            }
+            .hero {
+                position: relative;
+                min-height: 470px;
+                padding: clamp(80px, 11vw, 150px) clamp(22px, 8vw, 120px) 90px;
+                overflow: hidden;
+                background: radial-gradient(ellipse at 78% 25%, rgba(8, 123, 255, 0.19), transparent 38%),
+                    linear-gradient(180deg, #070a12, #05070d);
+            }
+            .hero:before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+                background-size: 58px 58px;
+                mask-image: linear-gradient(#000, transparent 90%);
+                pointer-events: none;
+            }
+            .hero:after {
+                content: "SS / STAFF";
+                position: absolute;
+                right: -15px;
+                bottom: -40px;
+                font-size: clamp(100px, 22vw, 300px);
+                font-weight: 1000;
+                letter-spacing: -0.09em;
+                color: rgba(255, 255, 255, 0.025);
+                white-space: nowrap;
+                pointer-events: none;
+            }
+            .hero-inner {
+                position: relative;
+                z-index: 1;
+                max-width: 1500px;
+                margin: auto;
+            }
+            .kicker {
+                color: var(--blue);
+                font-size: 11px;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                font-weight: 950;
+            }
+            h1,
+            h2,
+            h3,
+            p {
+                margin-top: 0;
+            }
+            .hero h1 {
+                font-size: clamp(52px, 10vw, 132px);
+                line-height: 0.83;
+                letter-spacing: -0.08em;
+                text-transform: uppercase;
+                margin: 22px 0 28px;
+                font-weight: 1000;
+            }
+            .outline {
+                color: transparent;
+                -webkit-text-stroke: 1px rgba(255, 255, 255, 0.72);
+            }
+            .hero-copy {
+                max-width: 570px;
+                color: var(--muted);
+                font-size: 15px;
+                line-height: 1.8;
+                margin-bottom: 30px;
+            }
+            .hero-meta {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+            .pill {
+                border: 1px solid var(--line);
+                padding: 8px 11px;
+                color: #c5ccda;
+                font:
+                    800 10px ui-monospace,
+                    monospace;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                background: rgba(255, 255, 255, 0.025);
+            }
+            .pill strong {
+                color: var(--blue);
+                font-weight: 900;
+            }
+            main {
+                max-width: 1700px;
+                margin: 0 auto;
+            }
+            .staff-section {
+                padding: clamp(55px, 7vw, 100px) clamp(22px, 5vw, 76px);
+                position: relative;
+            }
+            .section-head {
+                display: flex;
+                align-items: flex-end;
+                justify-content: space-between;
+                gap: 30px;
+                margin-bottom: 30px;
+            }
+            .section-head h2 {
+                font-size: clamp(30px, 5vw, 58px);
+                line-height: 0.95;
+                letter-spacing: -0.065em;
+                text-transform: uppercase;
+                margin: 12px 0 0;
+            }
+            .section-head p {
+                max-width: 360px;
+                color: var(--muted);
+                font-size: 13px;
+                line-height: 1.8;
+                margin: 0;
+            }
+            .staff-grid {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 14px;
+            }
+            .staff-card {
+                min-width: 0;
+                position: relative;
+                overflow: hidden;
+                border: 1px solid var(--line);
+                background: linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.008));
+                transition:
+                    transform 0.25s,
+                    border-color 0.25s;
+            }
+            .staff-card:hover {
+                transform: translateY(-5px);
+                border-color: rgba(8, 123, 255, 0.75);
+            }
+            .staff-card:before {
+                content: "";
+                position: absolute;
+                inset: 0 0 auto;
+                height: 2px;
+                background: linear-gradient(90deg, var(--blue), transparent 75%);
+                opacity: 0.8;
+            }
+            .card-top {
+                height: 145px;
+                position: relative;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                background: radial-gradient(ellipse at 50% 70%, rgba(8, 123, 255, 0.22), transparent 62%), #080b13;
+                border-bottom: 1px solid var(--line);
+            }
+            .card-top:before {
+                content: "";
+                position: absolute;
+                width: 190px;
+                height: 190px;
+                border: 1px solid rgba(8, 123, 255, 0.18);
+                transform: rotate(45deg);
+                right: -90px;
+                bottom: -130px;
+            }
+            .card-top:after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(135deg, transparent 48%, rgba(8, 123, 255, 0.055) 49%, transparent 50%);
+                background-size: 22px 22px;
+            }
+            .avatar {
+                width: 82px;
+                height: 82px;
+                display: grid;
+                place-items: center;
+                border: 1px solid rgba(8, 123, 255, 0.65);
+                background: #0b1423;
+                color: #b8d8ff;
+                font-size: 24px;
+                font-weight: 1000;
+                letter-spacing: -0.06em;
+                box-shadow: 0 0 40px rgba(8, 123, 255, 0.14);
+                position: relative;
+                z-index: 1;
+                overflow: hidden;
+            }
+            .avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+            .card-index {
+                position: absolute;
+                left: 16px;
+                top: 15px;
+                color: #6f829f;
+                font:
+                    800 9px ui-monospace,
+                    monospace;
+                letter-spacing: 0.12em;
+            }
+            .card-status {
+                position: absolute;
+                right: 14px;
+                bottom: 13px;
+                color: #7bbaff;
+                font:
+                    800 9px ui-monospace,
+                    monospace;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+            }
+            .card-content {
+                padding: 20px;
+            }
+            .role-label {
+                color: var(--blue);
+                font:
+                    900 10px ui-monospace,
+                    monospace;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                margin-bottom: 9px;
+            }
+            .card-content h3 {
+                font-size: clamp(17px, 1.5vw, 21px);
+                letter-spacing: -0.045em;
+                margin: 0 0 10px;
+                overflow-wrap: anywhere;
+            }
+            .discord-id {
+                display: block;
+                color: #8797af;
+                font:
+                    700 10px ui-monospace,
+                    monospace;
+                overflow-wrap: anywhere;
+                line-height: 1.6;
+                margin-bottom: 15px;
+            }
+            .profile-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                color: #dbe8fb;
+                font-size: 10px;
+                font-weight: 900;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                border-bottom: 1px solid rgba(8, 123, 255, 0.5);
+                padding-bottom: 5px;
+                transition: color 0.2s;
+            }
+            .profile-link:hover {
+                color: #5eaeff;
+            }
+            .staff-note {
+                display: flex;
+                gap: 14px;
+                align-items: flex-start;
+                padding: 20px 22px;
+                border: 1px solid rgba(8, 123, 255, 0.28);
+                background: radial-gradient(ellipse at 0 50%, rgba(8, 123, 255, 0.1), transparent 65%), #080c16;
+                margin-top: 26px;
+            }
+            .note-mark {
+                color: var(--blue);
+                font:
+                    900 18px ui-monospace,
+                    monospace;
+            }
+            .staff-note p {
+                margin: 0;
+                color: var(--muted);
+                font-size: 12px;
+                line-height: 1.8;
+            }
+            .staff-note strong {
+                color: #e9f2ff;
+            }
+            .divider {
+                height: 1px;
+                background: linear-gradient(90deg, transparent, var(--line), transparent);
+                margin: 0 clamp(22px, 5vw, 76px);
+            }
+            .footer {
+                padding: 28px clamp(22px, 5vw, 76px);
+                border-top: 1px solid var(--line);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+                color: #8f9ab0;
+                font-size: 11px;
+            }
+            .footer-brand {
+                display: flex;
+                align-items: center;
+                width: 132px;
+                height: 48px;
+            }
+            .footer-brand img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+            .footer-links {
+                display: flex;
+                gap: 20px;
+                flex-wrap: wrap;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-weight: 800;
+            }
+            .footer-links a:hover {
+                color: white;
+            }
+            .reveal {
+                opacity: 0;
+                transform: translateY(22px);
+                transition:
+                    opacity 0.7s ease,
+                    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+            }
+            .reveal.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            @media (max-width: 1100px) {
+                .staff-grid {
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                }
+            }
+            @media (max-width: 800px) {
+                .nav {
+                    height: 66px;
+                }
+                .nav-brand {
+                    width: 118px;
+                    height: 48px;
+                }
+                .menu-toggle {
+                    display: block;
+                }
+                .nav-cta {
+                    display: none;
+                }
+                .nav-links {
+                    display: none;
+                    position: absolute;
+                    top: 65px;
+                    left: 0;
+                    right: 0;
+                    padding: 22px;
+                    background: rgba(5, 7, 13, 0.98);
+                    flex-direction: column;
+                    align-items: flex-start;
+                    border-bottom: 1px solid var(--line);
+                }
+                .nav-links.open {
+                    display: flex;
+                }
+                .section-head {
+                    display: block;
+                }
+                .section-head p {
+                    margin-top: 18px;
+                }
+                .staff-grid {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+                .card-top {
+                    height: 130px;
+                }
+                .footer {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+            }
+            @media (max-width: 520px) {
+                .staff-grid {
+                    grid-template-columns: 1fr;
+                }
+                .staff-card {
+                    display: grid;
+                    grid-template-columns: 112px minmax(0, 1fr);
+                }
+                .card-top {
+                    height: 100%;
+                    min-height: 170px;
+                    border-bottom: 0;
+                    border-right: 1px solid var(--line);
+                }
+                .avatar {
+                    width: 66px;
+                    height: 66px;
+                    font-size: 20px;
+                }
+                .card-content {
+                    padding: 17px 15px;
+                }
+                .card-content h3 {
+                    font-size: 17px;
+                }
+                .card-index {
+                    left: 10px;
+                    top: 10px;
+                }
+                .card-status {
+                    left: 10px;
+                    right: auto;
+                    bottom: 10px;
+                    font-size: 8px;
+                }
+                .hero {
+                    min-height: 430px;
+                }
+                .hero h1 {
+                    font-size: clamp(50px, 15vw, 76px);
+                }
+                .footer-links {
+                    gap: 14px;
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                html {
+                    scroll-behavior: auto;
+                }
+                *,
+                *:before,
+                *:after {
+                    transition-duration: 0.01ms !important;
+                    animation-duration: 0.01ms !important;
+                }
+                .reveal {
+                    opacity: 1;
+                    transform: none;
+                }
+            }
+        
+
+            /* Restored simple loader from Smooth Edition */
+            body.ss-loading {
+                overflow: hidden;
+            }
+            .ss-loader {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                background: #05070d;
+                display: grid;
+                place-items: center;
+                overflow: hidden;
+                visibility: visible;
+                opacity: 1;
+                transition:
+                    opacity 0.55s ease,
+                    visibility 0.55s ease;
+            }
+            .ss-loader.is-done {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+            .ss-loader:before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                opacity: 0.2;
+                background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+                background-size: 72px 72px;
+            }
+            .ss-loader-center {
+                position: relative;
+                text-align: center;
+                width: 100%;
+                padding: 24px;
+            }
+            .ss-loader-logo {
+                display: flex;
+                align-items: baseline;
+                justify-content: center;
+                gap: 0.15em;
+                font-family: Impact, "Arial Narrow", sans-serif;
+                font-size: clamp(58px, 12vw, 150px);
+                font-weight: 1000;
+                letter-spacing: -0.045em;
+                white-space: nowrap;
+            }
+            .ss-loader-shell {
+                color: #f5f7fb;
+            }
+            .ss-loader-strike {
+                color: #087bff;
+            }
+            .ss-loader-tag {
+                font:
+                    800 9px ui-monospace,
+                    monospace;
+                letter-spacing: 0.32em;
+                color: #8495ad;
+                margin-top: 22px;
+            }
+            .ss-loader-footer {
+                position: absolute;
+                left: 24px;
+                right: 24px;
+                bottom: 25px;
+                display: flex;
+                justify-content: space-between;
+                font:
+                    700 9px ui-monospace,
+                    monospace;
+                letter-spacing: 0.13em;
+                color: #63718a;
+            }
+            .ss-loader-progress {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                height: 3px;
+                background: rgba(255, 255, 255, 0.08);
+            }
+            .ss-loader-progress i {
+                display: block;
+                width: 0;
+                height: 100%;
+                background: #087bff;
+                box-shadow: 0 0 18px rgba(8, 123, 255, 0.65);
+                animation: ss-simple-progress 2.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+            }
+            @keyframes ss-simple-progress {
+                to {
+                    width: 100%;
+                }
+            }
+            @media (max-width: 700px) {
+                .ss-loader-footer {
+                    left: 12px;
+                    right: 12px;
+                    bottom: 18px;
+                    font-size: 7px;
+                    letter-spacing: 0.06em;
+                }
+                .ss-loader-logo {
+                    font-size: clamp(45px, 11vw, 75px);
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .ss-loader-progress i {
+                    animation-duration: 0.4s;
+                }
+            }
+
+        </style>
+    </head>
+    <body class="ss-loading">
+        <div class="ss-loader" id="ssLoader" aria-label="Loading Shell Strike">
+            <div class="ss-loader-center">
+                <div class="ss-loader-logo">
+                    <span class="ss-loader-shell">SHELL</span><span class="ss-loader-strike">STRIKE</span>
+                </div>
+                <div class="ss-loader-tag">LOCK IN. WIN BIG.</div>
+            </div>
+            <div class="ss-loader-footer"><span>SHELL STRIKE // ARENA SYSTEM</span><span>INITIALIZING</span></div>
+            <div class="ss-loader-progress"><i id="ssLoaderProgress"></i></div>
+        </div>
+        <div class="noise" aria-hidden="true"></div>
+        <header class="nav">
+            <a class="nav-brand" href="index.html" aria-label="Shell Strike home"
+                ><img src="assets/logo.png" alt="Shell Strike"
+            /></a>
+            <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+                <a href="index.html">Home</a><a href="staff.html" aria-current="page">Staff</a
+                ><a href="past-seasons.html">Past seasons</a><a href="leaderboard.html">Leaderboard</a
+                ><a href="staff_app.html">Staff application</a><a href="tickets.html">Tickets / reports</a>
+            </nav>
+            <div style="display: flex; align-items: center; gap: 14px">
+                <a class="nav-cta" href="https://discord.gg/shell-strike-ranked-1470482329075060831">Enter the arena ↗</a
+                ><button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+                    ☰
+                </button>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="hero-inner">
+                <div class="kicker">Shell Strike / Command roster</div>
+                <h1>THE PEOPLE<br /><span class="outline">BEHIND</span><br />SHELL STRIKE.</h1>
+                <p class="hero-copy">
+                    The crew keeping the queues moving, the matches organised, and the community running. Meet the
+                    people behind Shell Strike.
+                </p>
+                <div class="hero-meta">
+                    <span class="pill"><strong>01</strong> / Leadership</span
+                    ><span class="pill"><strong>02</strong> / Operations</span
+                    ><span class="pill"><strong>03</strong> / Community</span>
+                </div>
+            </div>
+        </section>
+
+        <main>
+            <section class="staff-section" id="owners">
+                <div class="section-head reveal">
+                    <div>
+                        <div class="kicker">01 / Leadership</div>
+                        <h2>Owners<span class="outline">.</span></h2>
+                    </div>
+                    <p>Setting direction, managing the server, and keeping Shell Strike moving forward.</p>
+                </div>
+                <div class="staff-grid">
+                    <article class="staff-card reveal">
+                        <div class="card-top">
+                            <span class="card-index">SS / 001</span>
+                            <div class="avatar">
+                              <img src="assets/avatars/jagga.jpg" alt="Owner 01">
+                            </div>
+                            <span class="card-status">Leadership</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="role-label">Owner</div>
+                            <h3>nitinlf</h3>
+                            <span class="discord-id">Discord ID · 691552344956993617</span
+                            ><a
+                                class="profile-link"
+                                href="https://discord.com/users/691552344956993617"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >View Discord profile ↗</a
+                            >
+                        </div>
+                    </article>
+                    <article class="staff-card reveal">
+                        <div class="card-top">
+                            <span class="card-index">SS / 002</span>
+                            <div class="avatar">
+                              <img src="assets/avatars/curse.jpg" alt="Owner 01">
+                            </div>
+                            <span class="card-status">Leadership</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="role-label">Owner</div>
+                            <h3>curse</h3>
+                            <span class="discord-id">Discord ID · 1165577763080638534</span
+                            ><a
+                                class="profile-link"
+                                href="https://discord.com/users/1165577763080638534"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >View Discord profile ↗</a
+                            >
+                        </div>
+                    </article>
+                    <article class="staff-card reveal">
+                        <div class="card-top">
+                            <span class="card-index">SS / 003</span>
+                            <div class="avatar">
+                              <img src="assets/avatars/python.jpg" alt="Owner 01">
+                            </div>
+                            <span class="card-status">Leadership</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="role-label">Owner</div>
+                            <h3>pythonc0der</h3>
+                            <span class="discord-id">Discord ID · 797334130135924756</span
+                            ><a
+                                class="profile-link"
+                                href="https://discord.com/users/797334130135924756"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >View Discord profile ↗</a
+                            >
+                        </div>
+                    </article>
+                </div>
+            </section>
+            <div class="divider"></div>
+            <section class="staff-section" id="representative">
+                <div class="section-head reveal">
+                    <div>
+                        <div class="kicker">02 / BWD Code Support Representative</div>
+                        <h2>Server representative<span class="outline">.</span></h2>
+                    </div>
+                    <p>The point of contact representing Shell Strike to Blue Wizard Digital.</p>
+                </div>
+                <div class="staff-grid">
+                    <article class="staff-card reveal">
+                        <div class="card-top">
+                            <span class="card-index">SS / 004</span>
+                            <div class="avatar">
+                              <img src="assets/avatars/boel.jpg" alt="Owner 01">
+                            </div>
+                            <span class="card-status">Representative</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="role-label">Server representative</div>
+                            <h3>Representative 01</h3>
+                            <span class="discord-id">Discord ID · 732237021837393990</span
+                            ><a
+                                class="profile-link"
+                                href="https://discord.com/users/732237021837393990"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >View Discord profile ↗</a
+                            >
+                        </div>
+                    </article>
+                </div>
+            </section>
+            <div class="divider"></div>
+            <section class="staff-section" id="administrators">
+                <div class="section-head reveal">
+                    <div>
+                        <div class="kicker">03 / Operations</div>
+                        <h2>Administrators<span class="outline">.</span></h2>
+                    </div>
+                    <p>Handling the day-to-day operations, solving issues, and keeping the server organised.</p>
+                </div>
+                <div class="staff-grid">
+                    <article class="staff-card reveal">
+                        <div class="card-top">
+                            <span class="card-index">SS / 005</span>
+                            <div class="avatar">
+                              <img src="assets/avatars/curse.jpg" alt="Owner 01">
+                            </div>
+                            <span class="card-status">Operations</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="role-label">Administrator</div>
+                            <h3>curse</h3>
+                            <span class="discord-id">Discord ID · 1165577763080638534</span
+                            ><a
+                                class="profile-link"
+                                href="https://discord.com/users/1165577763080638534"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >View Discord profile ↗</a
+                            >
+                        </div>
+                    </article>
+                    <article class="staff-card reveal">
+                        <div class="card-top">
+                            <span class="card-index">SS / 006</span>
+                            <div class="avatar">
+                              <img src="assets/avatars/munk.jpg" alt="Owner 01">
+                            </div>
+                            <span class="card-status">Operations</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="role-label">Administrator</div>
+                            <h3>Munkeh</h3>
+                            <span class="discord-id">Discord ID · 1315645111119380592</span
+                            ><a
+                                class="profile-link"
+                                href="https://discord.com/users/1315645111119380592"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >View Discord profile ↗</a
+                            >
+                        </div>
+                    </article>
+                    <article class="staff-card reveal">
+                        <div class="card-top">
+                            <span class="card-index">SS / 007</span>
+                            <div class="avatar">
+                              <img src="assets/avatars/seek.jpg" alt="Owner 01">
+                            </div>
+                            <span class="card-status">Operations</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="role-label">Administrator</div>
+                            <h3>seek18</h3>
+                            <span class="discord-id">Discord ID · 805635043984539658</span
+                            ><a
+                                class="profile-link"
+                                href="https://discord.com/users/805635043984539658"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >View Discord profile ↗</a
+                            >
+                        </div>
+                    </article>
+                </div>
+            </section>
+            <div class="divider"></div>
+            <section class="staff-section" id="moderators">
+                <div class="section-head reveal">
+                    <div>
+                        <div class="kicker">04 / Community safety</div>
+                        <h2>Senior moderators<span class="outline">.</span></h2>
+                    </div>
+                    <p>Helping keep conversations fair, reports handled, and the community welcoming.</p>
+                </div>
+                <div class="staff-grid">
+                    <article class="staff-card reveal">
+                        <div class="card-top">
+                            <span class="card-index">SS / 008</span>
+                            <div class="avatar">
+                              <img src="assets/avatars/nova.jpg" alt="Owner 01">
+                            </div>
+                            <span class="card-status">Moderation</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="role-label">Senior moderator</div>
+                            <h3>novabreh</h3>
+                            <span class="discord-id">Discord ID · 1331287625553678376</span
+                            ><a
+                                class="profile-link"
+                                href="https://discord.com/users/1331287625553678376"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >View Discord profile ↗</a
+                            >
+                        </div>
+                    </article>
+                </div>
+            </section>
+            <div class="divider"></div>
+            <section class="staff-section" id="strike-managers">
+                <div class="section-head reveal">
+                    <div>
+                        <div class="kicker">05 / Scrim Host Manager</div>
+                        <h2>Strike managers<span class="outline">.</span></h2>
+                    </div>
+                    <p>Supporting organised matches and helping in overseeing Scrim Hosts Promotion/Demotion.</p>
+                </div>
+                <div class="staff-grid">
+                    <article class="staff-card reveal">
+                        <div class="card-top">
+                            <span class="card-index">SS / 009</span>
+                            <div class="avatar">
+                              <img src="assets/avatars/ade.jpg" alt="Owner 01">
+                            </div>
+                            <span class="card-status">Match ops</span>
+                        </div>
+                        <div class="card-content">
+                            <div class="role-label">Strike manager</div>
+                            <h3>Ade</h3>
+                            <span class="discord-id">Discord ID · 1146135722491904080</span
+                            ><a
+                                class="profile-link"
+                                href="https://discord.com/users/1146135722491904080"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                >View Discord profile ↗</a
+                            >
+                        </div>
+                    </article>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <a class="footer-brand" href="index.html" aria-label="Shell Strike home"
+                ><img src="assets/logo.png" alt="Shell Strike"
+            /></a>
+            <span>Built and managed by skizor04. © <span id="year"></span> Shell Strike.</span>
+            <div class="footer-links">
+                <a href="index.html">Home</a><a href="staff.html">Staff</a><a href="https://discord.gg/shell-strike-ranked-1470482329075060831">Discord ↗</a>
+            </div>
+        </footer>
+        <script>
+            (() => {
+                // Match the homepage loader: progress takes 2.6s, then the overlay fades away.
+                const ssLoader = document.getElementById("ssLoader");
+                const ssProgress = document.getElementById("ssLoaderProgress");
+                let ssLoaderDismissStarted = false;
+                function dismissShellStrikeLoader() {
+                    if (!ssLoader || ssLoaderDismissStarted) return;
+                    ssLoaderDismissStarted = true;
+                    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                    const duration = reduced ? 400 : 2600;
+                    if (ssProgress) {
+                        ssProgress.style.animation = "none";
+                        ssProgress.style.width = "0";
+                        void ssProgress.offsetWidth;
+                        ssProgress.style.transition = `width ${duration}ms cubic-bezier(.65,0,.35,1)`;
+                        requestAnimationFrame(() => {
+                            ssProgress.style.width = "100%";
+                        });
+                    }
+                    window.setTimeout(() => {
+                        ssLoader.classList.add("is-done");
+                        document.body.classList.remove("ss-loading");
+                    }, duration + 80);
+                }
+                if (document.readyState === "complete") {
+                    dismissShellStrikeLoader();
+                } else {
+                    window.addEventListener("load", dismissShellStrikeLoader, { once: true });
+                }
+                window.setTimeout(dismissShellStrikeLoader, 4500);
+
+                const toggle = document.getElementById("menuToggle");
+                const links = document.getElementById("navLinks");
+                toggle.addEventListener("click", () => {
+                    const open = links.classList.toggle("open");
+                    toggle.textContent = open ? "×" : "☰";
+                    toggle.setAttribute("aria-expanded", String(open));
+                });
+                links.querySelectorAll("a").forEach((a) =>
+                    a.addEventListener("click", () => {
+                        links.classList.remove("open");
+                        toggle.textContent = "☰";
+                        toggle.setAttribute("aria-expanded", "false");
+                    })
+                );
+                document.getElementById("year").textContent = new Date().getFullYear();
+                const observer = new IntersectionObserver(
+                    (entries) =>
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                entry.target.classList.add("visible");
+                                observer.unobserve(entry.target);
+                            }
+                        }),
+                    { threshold: 0.12 }
+                );
+                document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+            })();
+        </script>
+    </body>
+</html>
