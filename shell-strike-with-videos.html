@@ -1,0 +1,1282 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <meta name="theme-color" content="#05070d" />
+        <meta name="description" content="Shell Strike. Lock in, load up, and take the arena." />
+        <title>Shell Strike — Lock In</title>
+        <style>
+            :root {
+                --blue: #087bff;
+                --blue2: #3156ff;
+                --ink: #05070d;
+                --white: #f5f7fb;
+                --muted: #9ba8bd;
+                --line: rgba(255, 255, 255, 0.14);
+            }
+            * {
+                box-sizing: border-box;
+            }
+            html {
+                scroll-behavior: smooth;
+                scrollbar-color: var(--blue) #080b13;
+            }
+            body {
+                margin: 0;
+                background: var(--ink);
+                color: var(--white);
+                font-family:
+                    Inter,
+                    ui-sans-serif,
+                    system-ui,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    sans-serif;
+                overflow-x: hidden;
+            }
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+            button,
+            a {
+                -webkit-tap-highlight-color: transparent;
+            }
+            ::selection {
+                background: var(--blue);
+                color: #fff;
+            }
+            .noise {
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 20;
+                opacity: 0.035;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+            }
+            .nav {
+                position: fixed;
+                z-index: 30;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 76px;
+                padding: 0 clamp(20px, 5vw, 76px);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                border-bottom: 1px solid transparent;
+                transition:
+                    background 0.3s,
+                    border-color 0.3s;
+            }
+            .nav.scrolled {
+                background: rgba(5, 7, 13, 0.78);
+                backdrop-filter: blur(18px);
+                border-color: var(--line);
+            }
+            .nav-brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 950;
+                letter-spacing: -0.07em;
+                font-size: 20px;
+            }
+            .nav-brand img {
+                width: 35px;
+                height: 35px;
+                object-fit: contain;
+            }
+            .nav-brand span {
+                color: var(--blue);
+            }
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: clamp(18px, 3vw, 42px);
+                font-size: 12px;
+                font-weight: 750;
+                text-transform: uppercase;
+                letter-spacing: 0.11em;
+                color: #c5ccda;
+            }
+            .nav-links a {
+                transition: color 0.2s;
+            }
+            .nav-links a:hover {
+                color: #fff;
+            }
+            .nav-cta,
+            .button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                padding: 14px 20px;
+                background: var(--blue);
+                color: #fff;
+                font-weight: 900;
+                font-size: 12px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                border: 1px solid var(--blue);
+                clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+                transition:
+                    transform 0.2s,
+                    background 0.2s;
+            }
+            .nav-cta:hover,
+            .button:hover {
+                transform: translateY(-3px);
+                background: #3190ff;
+            }
+            .menu-toggle {
+                display: none;
+                background: none;
+                border: 0;
+                color: white;
+                font-size: 25px;
+            }
+            /* The hero is deliberately pinned while scroll progress drives the reveal. */
+            .hero-scroll {
+                height: 260vh;
+                position: relative;
+            }
+            .hero-pin {
+                position: sticky;
+                top: 0;
+                height: 100svh;
+                min-height: 560px;
+                overflow: hidden;
+                background: #000;
+                isolation: isolate;
+            }
+            .hero-bg {
+                position: absolute;
+                inset: -6%;
+                width: 112%;
+                height: 112%;
+                object-fit: cover;
+                opacity: 0;
+                transform: scale(1.13);
+                filter: saturate(0.8);
+                will-change: transform, opacity;
+            }
+            .hero-vignette {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(90deg, rgba(0, 0, 0, 0.66), transparent 65%),
+                    linear-gradient(0deg, #05070d 0%, transparent 38%, rgba(0, 0, 0, 0.2));
+                opacity: 0;
+                pointer-events: none;
+            }
+            .hero-grid {
+                position: absolute;
+                inset: 0;
+                opacity: 0;
+                background: linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+                background-size: 64px 64px;
+                mask-image: linear-gradient(transparent, black 30%, transparent);
+            }
+            .hero-content {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 100px 24px 50px;
+                opacity: 0;
+                transform: translateY(30px);
+                will-change: opacity, transform;
+            }
+            .hero-mark {
+                position: absolute;
+                width: min(74vw, 900px);
+                height: auto;
+                object-fit: contain;
+                opacity: 0;
+                transform: scale(0.74) rotate(-3deg);
+                will-change: transform, opacity;
+                filter: drop-shadow(0 20px 60px rgba(0, 0, 0, 0.3));
+            }
+            .hero-copy {
+                position: relative;
+                z-index: 2;
+                margin-top: clamp(180px, 28vh, 280px);
+                max-width: 900px;
+            }
+            .eyebrow {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                color: #b8d8ff;
+                font-size: 11px;
+                letter-spacing: 0.22em;
+                font-weight: 900;
+                text-transform: uppercase;
+            }
+            .eyebrow:before {
+                content: "";
+                width: 24px;
+                height: 2px;
+                background: var(--blue);
+            }
+            .hero h1 {
+                font-size: clamp(42px, 8vw, 108px);
+                line-height: 0.86;
+                letter-spacing: -0.075em;
+                margin: 24px 0 20px;
+                font-weight: 1000;
+                text-transform: uppercase;
+            }
+            .hero h1 span {
+                color: var(--blue);
+                display: block;
+            }
+            .hero-copy p {
+                color: #d0d6e2;
+                max-width: 530px;
+                margin: 0 auto 28px;
+                line-height: 1.7;
+                font-size: clamp(14px, 1.5vw, 17px);
+            }
+            .hero-actions {
+                display: flex;
+                gap: 12px;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            .button.secondary {
+                background: rgba(8, 12, 22, 0.45);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+            .scroll-cue {
+                position: absolute;
+                bottom: 32px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                color: #d0d6e2;
+                font-size: 10px;
+                font-weight: 800;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                white-space: nowrap;
+                opacity: 0;
+            }
+            .scroll-line {
+                height: 34px;
+                width: 1px;
+                background: linear-gradient(transparent, var(--blue));
+            }
+            .hero-counter {
+                position: absolute;
+                bottom: 36px;
+                right: clamp(22px, 5vw, 76px);
+                font:
+                    800 11px ui-monospace,
+                    monospace;
+                letter-spacing: 0.12em;
+                color: rgba(255, 255, 255, 0.65);
+                opacity: 0;
+            }
+            .hero-counter b {
+                color: var(--blue);
+            }
+            .frame {
+                position: absolute;
+                inset: 14px;
+                border: 1px solid rgba(255, 255, 255, 0.17);
+                pointer-events: none;
+                opacity: 0;
+            }
+            .frame:before,
+            .frame:after {
+                content: "";
+                position: absolute;
+                width: 36px;
+                height: 3px;
+                background: var(--blue);
+                left: -1px;
+                top: -1px;
+            }
+            .frame:after {
+                left: auto;
+                top: auto;
+                right: -1px;
+                bottom: -1px;
+            }
+            section.content {
+                position: relative;
+                padding: clamp(80px, 12vw, 160px) clamp(22px, 8vw, 120px);
+            }
+            .section-kicker {
+                color: var(--blue);
+                font-size: 11px;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                font-weight: 950;
+            }
+            .section-title {
+                font-size: clamp(38px, 6vw, 78px);
+                line-height: 0.95;
+                letter-spacing: -0.065em;
+                text-transform: uppercase;
+                margin: 18px 0 24px;
+                font-weight: 1000;
+            }
+            .section-title .outline {
+                color: transparent;
+                -webkit-text-stroke: 1px rgba(255, 255, 255, 0.72);
+            }
+            .intro {
+                display: grid;
+                grid-template-columns: 1.05fr 0.95fr;
+                gap: 8vw;
+                align-items: center;
+                background: #070a12;
+            }
+            .intro-text p,
+            .feature-card p,
+            .final-copy p {
+                color: var(--muted);
+                font-size: 15px;
+                line-height: 1.8;
+                max-width: 540px;
+            }
+            .intro-visual {
+                position: relative;
+                min-height: 360px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                border: 1px solid var(--line);
+                background: radial-gradient(ellipse at 50% 50%, rgba(8, 123, 255, 0.2), transparent 65%), #080c16;
+            }
+            .intro-visual img {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                inset: 0;
+                object-fit: cover;
+                opacity: 0.62;
+                mix-blend-mode: screen;
+                transform: scale(1.12);
+                transition: transform 1s;
+            }
+            .intro-visual:hover img {
+                transform: scale(1.02);
+            }
+            .visual-label {
+                position: absolute;
+                bottom: 18px;
+                left: 20px;
+                font:
+                    800 10px ui-monospace,
+                    monospace;
+                letter-spacing: 0.12em;
+                color: #fff;
+            }
+            .visual-number {
+                position: absolute;
+                right: 20px;
+                top: 20px;
+                color: var(--blue);
+                font:
+                    900 12px ui-monospace,
+                    monospace;
+            }
+            .features {
+                background: #05070d;
+            }
+            .features-head {
+                display: flex;
+                justify-content: space-between;
+                gap: 40px;
+                align-items: end;
+                margin-bottom: 50px;
+            }
+            .features-head p {
+                max-width: 300px;
+                color: var(--muted);
+                font-size: 14px;
+                line-height: 1.7;
+            }
+            .feature-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 14px;
+            }
+            .feature-card {
+                min-height: 280px;
+                border: 1px solid var(--line);
+                padding: 28px;
+                position: relative;
+                overflow: hidden;
+                background: linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.008));
+                transition:
+                    transform 0.25s,
+                    border-color 0.25s;
+            }
+            .feature-card:hover {
+                transform: translateY(-6px);
+                border-color: rgba(8, 123, 255, 0.7);
+            }
+            .feature-card .num {
+                font:
+                    900 11px ui-monospace,
+                    monospace;
+                color: var(--blue);
+            }
+            .feature-icon {
+                margin: 32px 0 24px;
+                width: 44px;
+                height: 44px;
+                border: 1px solid rgba(8, 123, 255, 0.5);
+                display: grid;
+                place-items: center;
+                color: #7bbaff;
+                font-size: 22px;
+            }
+            .feature-card h3 {
+                font-size: 20px;
+                letter-spacing: -0.04em;
+                text-transform: uppercase;
+                margin: 0 0 10px;
+            }
+            .feature-card p {
+                font-size: 13px;
+                margin: 0;
+            }
+            .feature-card:after {
+                content: "";
+                position: absolute;
+                right: -45px;
+                bottom: -65px;
+                width: 150px;
+                height: 150px;
+                border: 1px solid rgba(8, 123, 255, 0.15);
+                transform: rotate(45deg);
+            }
+            .marquee {
+                overflow: hidden;
+                background: var(--blue);
+                color: white;
+                padding: 19px 0;
+                border-top: 1px solid rgba(255, 255, 255, 0.25);
+                border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+            }
+            .marquee-track {
+                display: flex;
+                width: max-content;
+                animation: marquee 24s linear infinite;
+            }
+            .marquee span {
+                font-size: clamp(22px, 3vw, 38px);
+                font-weight: 1000;
+                letter-spacing: -0.05em;
+                text-transform: uppercase;
+                padding-right: 36px;
+            }
+            .marquee b {
+                color: rgba(255, 255, 255, 0.55);
+                padding-right: 36px;
+            }
+            @keyframes marquee {
+                to {
+                    transform: translateX(-50%);
+                }
+            }
+            .final-cta {
+                min-height: 76vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                overflow: hidden;
+                background: radial-gradient(ellipse at 50% 100%, rgba(8, 123, 255, 0.22), transparent 55%), #070a12;
+            }
+            .final-cta:before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+                background-size: 55px 55px;
+                mask-image: linear-gradient(black, transparent);
+            }
+            .final-copy {
+                position: relative;
+                max-width: 850px;
+            }
+            .final-copy .section-title {
+                font-size: clamp(48px, 9vw, 112px);
+            }
+            .final-copy p {
+                margin: 0 auto 30px;
+            }
+            .footer {
+                padding: 28px clamp(22px, 5vw, 76px);
+                border-top: 1px solid var(--line);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+                color: #8f9ab0;
+                font-size: 11px;
+            }
+            .footer-brand {
+                display: inline-flex;
+                align-items: center;
+                flex: 0 0 auto;
+                width: 154px;
+                height: 48px;
+            }
+            .footer-brand img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                object-position: left center;
+            }
+            .footer-links {
+                display: flex;
+                gap: 20px;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-weight: 800;
+            }
+            .footer-links a:hover {
+                color: white;
+            }
+            .reveal {
+                opacity: 0;
+                transform: translateY(28px);
+                transition:
+                    opacity 0.8s ease,
+                    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+            }
+            .reveal.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .delay-1 {
+                transition-delay: 0.12s;
+            }
+            .delay-2 {
+                transition-delay: 0.24s;
+            }
+            @media (max-width: 760px) {
+                .nav {
+                    height: 66px;
+                }
+                .nav-links {
+                    display: none;
+                    position: absolute;
+                    top: 65px;
+                    left: 0;
+                    right: 0;
+                    padding: 24px;
+                    background: rgba(5, 7, 13, 0.97);
+                    flex-direction: column;
+                    align-items: flex-start;
+                    border-bottom: 1px solid var(--line);
+                }
+                .nav-links.open {
+                    display: flex;
+                }
+                .nav-cta {
+                    padding: 11px 13px;
+                    font-size: 10px;
+                }
+                .menu-toggle {
+                    display: block;
+                }
+                .hero-scroll {
+                    height: 230vh;
+                }
+                .hero-pin {
+                    min-height: 620px;
+                }
+                .hero-mark {
+                    width: 110vw;
+                    max-width: none;
+                }
+                .hero-copy {
+                    margin-top: clamp(220px, 35vh, 330px);
+                }
+                .hero h1 {
+                    font-size: clamp(42px, 12vw, 76px);
+                }
+                .hero-copy p {
+                    max-width: 390px;
+                }
+                .frame {
+                    inset: 8px;
+                }
+                .intro {
+                    grid-template-columns: 1fr;
+                    gap: 32px;
+                }
+                .intro-visual {
+                    min-height: 260px;
+                }
+                .features-head {
+                    display: block;
+                }
+                .features-head p {
+                    margin-top: 20px;
+                }
+                .feature-grid {
+                    grid-template-columns: 1fr;
+                }
+                .feature-card {
+                    min-height: 230px;
+                }
+                .feature-icon {
+                    margin: 22px 0 18px;
+                }
+                .footer {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                .footer-brand {
+                    width: 132px;
+                    height: 42px;
+                }
+                .footer-links {
+                    flex-wrap: wrap;
+                }
+                .hero-counter {
+                    bottom: 18px;
+                }
+                .scroll-cue {
+                    bottom: 18px;
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                html {
+                    scroll-behavior: auto;
+                }
+                *,
+                *:before,
+                *:after {
+                    animation-duration: 0.01ms !important;
+                    animation-iteration-count: 1 !important;
+                    transition-duration: 0.01ms !important;
+                }
+                .hero-scroll {
+                    height: 100vh;
+                }
+                .hero-bg,
+                .hero-content,
+                .hero-mark,
+                .hero-shell-mark,
+                .hero-vignette,
+                .hero-grid,
+                .frame,
+                .scroll-cue,
+                .hero-counter {
+                    opacity: 1 !important;
+                    transform: none !important;
+                }
+            }
+
+            /* Restored simple loader from Smooth Edition */
+            body.ss-loading {
+                overflow: hidden;
+            }
+            .ss-loader {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                background: #05070d;
+                display: grid;
+                place-items: center;
+                overflow: hidden;
+                visibility: visible;
+                opacity: 1;
+                transition:
+                    opacity 0.55s ease,
+                    visibility 0.55s ease;
+            }
+            .ss-loader.is-done {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+            .ss-loader:before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                opacity: 0.2;
+                background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+                background-size: 72px 72px;
+            }
+            .ss-loader-center {
+                position: relative;
+                text-align: center;
+                width: 100%;
+                padding: 24px;
+            }
+            .ss-loader-logo {
+                display: flex;
+                align-items: baseline;
+                justify-content: center;
+                gap: 0.15em;
+                font-family: Impact, "Arial Narrow", sans-serif;
+                font-size: clamp(58px, 12vw, 150px);
+                font-weight: 1000;
+                letter-spacing: -0.045em;
+                white-space: nowrap;
+            }
+            .ss-loader-shell {
+                color: #f5f7fb;
+            }
+            .ss-loader-strike {
+                color: #087bff;
+            }
+            .ss-loader-tag {
+                font:
+                    800 9px ui-monospace,
+                    monospace;
+                letter-spacing: 0.32em;
+                color: #8495ad;
+                margin-top: 22px;
+            }
+            .ss-loader-footer {
+                position: absolute;
+                left: 24px;
+                right: 24px;
+                bottom: 25px;
+                display: flex;
+                justify-content: space-between;
+                font:
+                    700 9px ui-monospace,
+                    monospace;
+                letter-spacing: 0.13em;
+                color: #63718a;
+            }
+            .ss-loader-progress {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                height: 3px;
+                background: rgba(255, 255, 255, 0.08);
+            }
+            .ss-loader-progress i {
+                display: block;
+                width: 0;
+                height: 100%;
+                background: #087bff;
+                box-shadow: 0 0 18px rgba(8, 123, 255, 0.65);
+                animation: ss-simple-progress 2.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+            }
+            @keyframes ss-simple-progress {
+                to {
+                    width: 100%;
+                }
+            }
+            @media (max-width: 700px) {
+                .ss-loader-footer {
+                    left: 12px;
+                    right: 12px;
+                    bottom: 18px;
+                    font-size: 7px;
+                    letter-spacing: 0.06em;
+                }
+                .ss-loader-logo {
+                    font-size: clamp(45px, 11vw, 75px);
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .ss-loader-progress i {
+                    animation-duration: 0.4s;
+                }
+            }
+
+            /* HERO COMPOSITION FIX: keep both marks centered and copy readable */
+            .hero-content {
+                display: block;
+                text-align: center;
+                padding: 0;
+                opacity: 0;
+                transform: translate3d(0, 18px, 0);
+                will-change: opacity, transform;
+            }
+            .hero-shell-mark {
+                position: absolute !important;
+                left: 50% !important;
+                top: 8% !important;
+                width: min(560px, 68vw) !important;
+                height: auto !important;
+                z-index: 3;
+                opacity: 0;
+                transform: translate3d(-50%, 0, 0) scale(0.94);
+                pointer-events: none;
+            }
+            .hero-mark {
+                position: absolute !important;
+                left: 50% !important;
+                top: 5% !important;
+                width: min(900px, 78vw) !important;
+                height: auto !important;
+                z-index: 2;
+                opacity: 0;
+                transform: translate3d(-50%, 0, 0) scale(0.92);
+                pointer-events: none;
+            }
+            .hero-copy {
+                position: absolute !important;
+                left: 50% !important;
+                top: 55% !important;
+                transform: translate3d(-50%, 0, 0);
+                width: min(900px, 90vw);
+                max-width: 900px;
+                margin: 0 !important;
+                z-index: 5;
+            }
+            .hero h1 {
+                font-size: clamp(34px, 4vw, 54px);
+                line-height: 0.98;
+                letter-spacing: -0.055em;
+                margin: 14px 0 12px;
+            }
+            .hero h1 span {
+                display: inline;
+                color: var(--blue);
+            }
+            .hero-copy p {
+                max-width: 560px;
+                margin: 0 auto 22px;
+                font-size: clamp(13px, 1.25vw, 16px);
+                line-height: 1.65;
+            }
+            .hero-copy .eyebrow {
+                justify-content: center;
+            }
+            @media (max-width: 760px) {
+                .hero-shell-mark {
+                    top: 10% !important;
+                    width: min(420px, 86vw) !important;
+                }
+                .hero-mark {
+                    top: 7% !important;
+                    width: 112vw !important;
+                    max-width: none !important;
+                }
+                .hero-copy {
+                    top: 53% !important;
+                    width: 90vw;
+                }
+                .hero h1 {
+                    font-size: clamp(34px, 8vw, 48px);
+                    margin: 12px 0;
+                }
+                .hero-copy p {
+                    font-size: 13px;
+                    margin-bottom: 18px;
+                }
+            }
+            @media (max-height: 740px) and (min-width: 761px) {
+                .hero-shell-mark {
+                    top: 3% !important;
+                    width: min(460px, 52vw) !important;
+                }
+                .hero-mark {
+                    top: 0% !important;
+                    width: min(760px, 70vw) !important;
+                }
+                .hero-copy {
+                    top: 49% !important;
+                }
+                .hero h1 {
+                    font-size: clamp(32px, 3.8vw, 48px);
+                    margin: 9px 0;
+                }
+            }
+
+            /* Use the supplied full Shell Strike logo in the navigation corner */
+            .nav-brand-image {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                width: 154px;
+                height: 56px;
+                flex: 0 0 auto;
+                gap: 0;
+            }
+            .nav-brand-image img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+            }
+            @media (max-width: 700px) {
+                .nav-brand-image {
+                    width: 118px;
+                    height: 48px;
+                }
+            }
+
+            /* HOW IT WORKS: queue flow, match setup, ELO and a real scoreboard example */
+            .how-section { background: #05070d; }
+            .how-head { display:flex; justify-content:space-between; align-items:flex-end; gap:40px; margin-bottom:48px; }
+            .how-head p { max-width:360px; color:var(--muted); font-size:14px; line-height:1.8; margin:0 0 5px; }
+            .how-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+            .how-card { min-height:300px; position:relative; overflow:hidden; padding:28px; border:1px solid var(--line); background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.008)); transition:transform .25s,border-color .25s; }
+            .how-card:hover { transform:translateY(-5px); border-color:rgba(8,123,255,.72); }
+            .how-card:after { content:""; position:absolute; right:-48px; bottom:-68px; width:150px; height:150px; border:1px solid rgba(8,123,255,.18); transform:rotate(45deg); pointer-events:none; }
+            .how-num { color:var(--blue); font:900 11px ui-monospace,monospace; letter-spacing:.08em; }
+            .how-symbol { width:46px; height:46px; margin:30px 0 24px; display:grid; place-items:center; border:1px solid rgba(8,123,255,.55); color:#7bbaff; font-size:22px; }
+            .how-card h3 { margin:0 0 12px; font-size:21px; line-height:1.15; letter-spacing:-.045em; text-transform:uppercase; }
+            .how-card p { margin:0; color:var(--muted); font-size:13px; line-height:1.8; max-width:390px; }
+            .format-tags { display:flex; flex-wrap:wrap; gap:7px; margin-top:19px; }
+            .format-tags span { padding:6px 9px; border:1px solid rgba(8,123,255,.35); color:#b8d8ff; background:rgba(8,123,255,.07); font:800 10px ui-monospace,monospace; }
+            .server-list { display:flex; flex-wrap:wrap; gap:7px; margin-top:17px; }
+            .server-list span { color:#c5ccda; border:1px solid var(--line); padding:6px 9px; font-size:10px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; }
+            .elo-strip { display:grid; grid-template-columns:1.2fr 1fr; align-items:center; gap:28px; margin-top:14px; padding:26px 28px; border:1px solid rgba(8,123,255,.36); background:radial-gradient(ellipse at 0 50%,rgba(8,123,255,.12),transparent 60%),#080c16; }
+            .elo-strip .eyebrow { color:#7bbaff; }
+            .elo-strip h3 { margin:12px 0 8px; font-size:clamp(22px,3vw,34px); line-height:1.05; letter-spacing:-.055em; text-transform:uppercase; }
+            .elo-strip p { margin:0; max-width:650px; color:var(--muted); font-size:13px; line-height:1.8; }
+            .prize-side { border-left:1px solid var(--line); padding-left:28px; }
+            .prize-label { color:var(--blue); font:900 10px ui-monospace,monospace; letter-spacing:.14em; text-transform:uppercase; }
+            .podium { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:13px; }
+            .podium div { padding:12px 10px; border:1px solid var(--line); background:rgba(255,255,255,.025); }
+            .podium b { display:block; color:#f5f7fb; font-size:12px; text-transform:uppercase; }
+            .podium span { display:block; margin-top:5px; color:var(--muted); font-size:10px; }
+            .scoreboard-showcase { margin-top:clamp(55px,8vw,100px); }
+            .scoreboard-head { display:flex; justify-content:space-between; align-items:flex-end; gap:28px; margin-bottom:22px; }
+            .scoreboard-head h3 { margin:10px 0 0; font-size:clamp(25px,4vw,46px); line-height:1; letter-spacing:-.055em; text-transform:uppercase; }
+            .scoreboard-head p { max-width:330px; margin:0; color:var(--muted); font-size:13px; line-height:1.8; }
+            .scoreboard-frame { position:relative; padding:10px; border:1px solid rgba(92,105,255,.55); background:#101219; overflow:hidden; }
+            .scoreboard-frame:before { content:"MATCH REPORT // EXAMPLE"; position:absolute; z-index:1; top:18px; left:20px; padding:7px 9px; background:rgba(5,7,13,.85); border:1px solid rgba(255,255,255,.15); color:#b8d8ff; font:800 9px ui-monospace,monospace; letter-spacing:.12em; }
+            .scoreboard-image { display:block; width:100%; height:auto; }
+            .scoreboard-note { display:flex; justify-content:space-between; gap:18px; margin-top:12px; color:#7f8da4; font:700 10px ui-monospace,monospace; letter-spacing:.08em; text-transform:uppercase; }
+            @media(max-width:900px) { .how-grid { grid-template-columns:1fr 1fr; } .how-card:last-child { grid-column:1/-1; } .elo-strip { grid-template-columns:1fr; } .prize-side { border-left:0; border-top:1px solid var(--line); padding:22px 0 0; } }
+            @media(max-width:760px) { .how-head,.scoreboard-head { display:block; } .how-head p,.scoreboard-head p { margin-top:20px; } .how-grid { grid-template-columns:1fr; } .how-card:last-child { grid-column:auto; } .how-card { min-height:245px; } .how-symbol { margin:22px 0 18px; } .elo-strip { padding:22px; } .scoreboard-frame { padding:4px; } .scoreboard-frame:before { top:9px; left:9px; font-size:7px; } .scoreboard-note { flex-direction:column; gap:6px; } }
+
+            /* Latest Shell Strike videos */
+            .videos-section { background:#070a12; }
+            .videos-head { display:flex; justify-content:space-between; align-items:flex-end; gap:36px; margin-bottom:38px; }
+            .videos-head p { max-width:340px; margin:0 0 4px; color:var(--muted); font-size:14px; line-height:1.8; }
+            .videos-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+            .video-card { min-width:0; overflow:hidden; border:1px solid var(--line); background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.008)); transition:transform .25s,border-color .25s; }
+            .video-card:hover { transform:translateY(-5px); border-color:rgba(8,123,255,.7); }
+            .video-frame { position:relative; aspect-ratio:16/9; background:#10131b; }
+            .video-frame iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+            .video-meta { padding:18px 20px 20px; }
+            .video-meta .video-label { color:var(--blue); font:900 10px ui-monospace,monospace; letter-spacing:.12em; text-transform:uppercase; }
+            .video-meta h3 { margin:9px 0 0; font-size:17px; line-height:1.35; letter-spacing:-.025em; text-transform:uppercase; }
+            @media(max-width:900px) { .videos-grid { grid-template-columns:1fr 1fr; } .video-card:last-child { grid-column:1/-1; } }
+            @media(max-width:760px) { .videos-head { display:block; } .videos-head p { margin-top:18px; } .videos-grid { grid-template-columns:1fr; } .video-card:last-child { grid-column:auto; } }
+
+
+        </style>
+    </head>
+    <body class="ss-loading">
+        <div class="ss-loader" id="ssLoader" aria-label="Loading Shell Strike">
+            <div class="ss-loader-center">
+                <div class="ss-loader-logo">
+                    <span class="ss-loader-shell">SHELL</span><span class="ss-loader-strike">STRIKE</span>
+                </div>
+                <div class="ss-loader-tag">LOCK IN. WIN BIG.</div>
+            </div>
+            <div class="ss-loader-footer"><span>SHELL STRIKE // ARENA SYSTEM</span><span>INITIALIZING</span></div>
+            <div class="ss-loader-progress"><i id="ssLoaderProgress"></i></div>
+        </div>
+        <div class="noise"></div>
+        <header class="nav" id="nav">
+            <a class="nav-brand nav-brand-image" href="#top" aria-label="Shell Strike home"
+                ><img src="assets/logo.png" alt="Shell Strike logo"
+            /></a>
+            <nav class="nav-links" id="navLinks">
+                <a href="#game">The game</a><a href="#features">How it works</a><a href="#community">Community</a>
+            </nav>
+            <div style="display: flex; align-items: center; gap: 14px">
+                <a class="nav-cta" href="#community">Enter the arena <span>↗</span></a
+                ><button class="menu-toggle" id="menuToggle" aria-label="Open navigation">☰</button>
+            </div>
+        </header>
+        <main id="top">
+            <section class="hero-scroll" id="heroScroll">
+                <div class="hero-pin" id="heroPin">
+                    <img class="hero-bg" id="heroBg" src="assets/hero-bg.jpg" alt="Shell Strike arena background" />
+                    <div class="hero-vignette" id="heroVignette"></div>
+                    <div class="hero-grid" id="heroGrid"></div>
+                    <div class="frame" id="heroFrame"></div>
+                    <div class="hero-content" id="heroContent">
+                        <img class="hero-shell-mark" id="heroShellMark" src="assets/shell-white.png" alt="Shell" /><img
+                            class="hero-mark"
+                            id="heroMark"
+                            src="assets/strike-hollow.png"
+                            alt="Strike"
+                        />
+                        <div class="hero-copy">
+                            <div class="eyebrow">Welcome to Shell Strike.</div>
+                            <h1>The RANKED <span>STANDARD.</span></h1>
+                            <p>
+                                A ranked Shell Shockers community built for competitive Classic scrims and KOTC. Find your rhythm, face your competition, and win big.
+                            </p>
+                            <div class="hero-actions">
+                                <a class="button" href="#game">Explore the game <span>↘</span></a
+                                ><a class="button secondary" href="#community">Find your squad <span>↗</span></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scroll-cue" id="scrollCue"><span class="scroll-line"></span> Scroll to deploy</div>
+                    <div class="hero-counter" id="heroCounter"><b>01</b> / 04</div>
+                </div>
+            </section>
+            <section class="content intro" id="game">
+                <div class="intro-text reveal">
+                    <div class="section-kicker">01 / The Formats.</div>
+                    <h2 class="section-title">TWO WAYS TO<br /><span class="outline">PLAY SERIOUS.</span></h2>
+                    <p>
+                        Shell Strike offers two competitive formats, each built around a different team size. Classic features 2v2, 3v3 and 4v4 scrims, where teams compete in organized matches. KOTC (King of the Coop) brings larger teams into 5v5, 6v6, 7v7 and 8v8 matches.
+                    </p>
+                    <p>
+                        Whether you want the precision of Classic Scrims or the chaos of KOTC, the choice is yours.
+                    </p>
+                    <a class="button" href="#features">Explore FORMATS <span>↘</span></a>
+                </div>
+                <div class="intro-visual reveal delay-1">
+                    <img src="assets/gameplay.jpg" alt="Shell Strike gameplay scene" loading="lazy" /><span
+                        class="visual-number"
+                        >SS // 001</span
+                    ><span class="visual-label">STRIKE - Built for the Competition.</span>
+                </div>
+            </section>
+            <div class="marquee" aria-hidden="true">
+                <div class="marquee-track">
+                    <span>One Server</span><b>✳</b><span>Two Formats</span><b>✳</b><span>Make it count</span
+                    ><b>✳</b><span>Pick your fight</span><b>✳</b><span>Play your way</span><b>✳</b
+                    ><span>Win BIG</span><b>✳</b>
+                </div>
+            </div>
+            <section class="content how-section" id="features">
+                <div class="how-head">
+                    <div class="reveal">
+                        <div class="section-kicker">02 / How it works</div>
+                        <h2 class="section-title">Queue up.<br /><span class="outline">Climb the ranks.</span></h2>
+                    </div>
+                    <p class="reveal delay-1">From finding a match to earning your place on the seasonal leaderboard, every step is built around competitive play.</p>
+                </div>
+                <div class="how-grid">
+                    <article class="how-card reveal">
+                        <div class="how-num">STEP 01 / FIND A MATCH</div>
+                        <div class="how-symbol" aria-hidden="true">⌕</div>
+                        <h3>Join a queue</h3>
+                        <p>Choose your format and queue up. Whether you're running a small squad or a full team, there's a match size for you.</p>
+                        <div class="format-tags" aria-label="Available formats"><span>2v2</span><span>3v3</span><span>4v4</span><span>5v5</span><span>6v6</span><span>7v7</span><span>8v8</span></div>
+                    </article>
+                    <article class="how-card reveal delay-1">
+                        <div class="how-num">STEP 02 / SET THE MATCH</div>
+                        <div class="how-symbol" aria-hidden="true">◇</div>
+                        <h3>Pick your setup</h3>
+                        <p>Sort out the teams, then choose the game server that works best for everyone. Get your players ready and lock in.</p>
+                        <div class="server-list" aria-label="Example game servers"><span>Singapore</span><span>EU</span><span>US</span><span>More regions</span></div>
+                    </article>
+                    <article class="how-card reveal delay-2">
+                        <div class="how-num">STEP 03 / PLAY TO WIN</div>
+                        <div class="how-symbol" aria-hidden="true">↗</div>
+                        <h3>Win. Score. Gain ELO.</h3>
+                        <p>Play the match, submit the result for scoring, and let the ELO change follow the outcome. Wins earn ELO; losses cost ELO. Every scored game moves the rankings.</p>
+                    </article>
+                </div>
+                <div class="elo-strip reveal">
+                    <div>
+                        <div class="eyebrow">Season standings</div>
+                        <h3>Every win moves you up.</h3>
+                        <p>Your ELO builds across the season. Keep showing up, keep winning, and push for a spot among the top players when the season closes.</p>
+                    </div>
+                    <div class="prize-side">
+                        <div class="prize-label">Top 3 ELO players · Seasonal prizes</div>
+                        <div class="podium">
+                            <div><b>01 / First</b><span>Season prize</span></div>
+                            <div><b>02 / Second</b><span>Season prize</span></div>
+                            <div><b>03 / Third</b><span>Season prize</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="scoreboard-showcase reveal">
+                    <div class="scoreboard-head">
+                        <div>
+                            <div class="section-kicker">Match report / 001</div>
+                            <h3>See how you stack up.</h3>
+                        </div>
+                        <p>Here's an example of the match stats players can use to review how a game went. Team score, kills, deaths, KDR and objective stats at a glance.</p>
+                    </div>
+                    <figure class="scoreboard-frame">
+                        <img class="scoreboard-image" src="assets/scoreboard.png" alt="Example Shell Strike scoreboard showing Blue Team and Red Team scores and player statistics" loading="lazy" />
+                    </figure>
+                    <div class="scoreboard-note"><span>Shell Strike / Match stats</span><span>Example image · Stats shown are illustrative</span></div>
+                </div>
+            </section>
+            <section class="content videos-section" id="videos">
+                <div class="videos-head">
+                    <div class="reveal">
+                        <div class="section-kicker">03 / Latest uploads</div>
+                        <h2 class="section-title">Fresh from<br /><span class="outline">the arena.</span></h2>
+                    </div>
+                    <p class="reveal delay-1">Catch the latest Shell Strike matches, highlights and moments from the community.</p>
+                </div>
+                <div class="videos-grid">
+                    <!-- Replace VIDEO_ID_1, VIDEO_ID_2 and VIDEO_ID_3 with the IDs from your YouTube video links. Example: youtube.com/watch?v=abc123 -> abc123 -->
+                    <article class="video-card reveal">
+                        <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/SCiL52wkfmI" title="Latest Shell Strike YouTube video 1" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+                        <div class="video-meta"><div class="video-label">Latest upload / 01</div><h3>Shell Strike Highlights 01</h3></div>
+                    </article>
+                    <article class="video-card reveal delay-1">
+                        <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/FwVNb_ACtyM" title="Latest Shell Strike YouTube video 2" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+                        <div class="video-meta"><div class="video-label">Latest upload / 02</div><h3>Shell Strike Highlights 02</h3></div>
+                    </article>
+                    <article class="video-card reveal delay-2">
+                        <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/F2GDQwsiib0" title="Latest Shell Strike YouTube video 3" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+                        <div class="video-meta"><div class="video-label">Latest upload / 03</div><h3>Shell Strike Highlights 03</h3></div>
+                    </article>
+                </div>
+            </section>
+            <section class="content final-cta" id="community">
+                <div class="final-copy reveal">
+                    <div class="section-kicker">04 / Your move</div>
+                    <h2 class="section-title">
+                        Your next<br /><span style="color: var(--blue)">round starts</span><br />here.
+                    </h2>
+                    <p>Find the community, get involved, and be part of what Shell Strike becomes next.</p>
+                    <div class="hero-actions">
+                        <a class="button" href="#top">Back to the top <span>↑</span></a
+                        ><a class="button secondary" href="mailto:hello@shellstrike.gg">Season 4 Live <span>↗</span></a>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <footer class="footer">
+            <a class="footer-brand" href="#top" aria-label="Shell Strike home"><img src="assets/logo.png" alt="Shell Strike logo" loading="lazy" /></a
+            ><span>Built and Managed by skizor04. © <span id="year"></span> Shell Strike.</span>
+            <div class="footer-links">
+                <a href="#game">The game</a><a href="#features">How it works</a><a href="#community">Community</a>
+            </div>
+        </footer>
+        <script>
+            (() => {
+                // Loading screen dismissal: wait for page load, then run the 2.6s line and reveal.
+                const ssLoader = document.getElementById("ssLoader");
+                const ssProgress = document.getElementById("ssLoaderProgress");
+                let ssLoaderDismissStarted = false;
+                function dismissShellStrikeLoader() {
+                    if (!ssLoader || ssLoaderDismissStarted) return;
+                    ssLoaderDismissStarted = true;
+                    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                    const duration = reduced ? 400 : 2600;
+                    if (ssProgress) {
+                        ssProgress.style.animation = "none";
+                        ssProgress.style.width = "0";
+                        void ssProgress.offsetWidth;
+                        ssProgress.style.transition = `width ${duration}ms cubic-bezier(.65,0,.35,1)`;
+                        requestAnimationFrame(() => {
+                            ssProgress.style.width = "100%";
+                        });
+                    }
+                    window.setTimeout(() => {
+                        ssLoader.classList.add("is-done");
+                        document.body.classList.remove("ss-loading");
+                    }, duration + 80);
+                }
+                if (document.readyState === "complete") {
+                    dismissShellStrikeLoader();
+                } else {
+                    window.addEventListener("load", dismissShellStrikeLoader, { once: true });
+                }
+                window.setTimeout(dismissShellStrikeLoader, 4500);
+
+                const hero = document.getElementById("heroScroll"),
+                    bg = document.getElementById("heroBg"),
+                    content = document.getElementById("heroContent"),
+                    mark = document.getElementById("heroMark"),
+                    shellMark = document.getElementById("heroShellMark"),
+                    vignette = document.getElementById("heroVignette"),
+                    grid = document.getElementById("heroGrid"),
+                    frame = document.getElementById("heroFrame"),
+                    cue = document.getElementById("scrollCue"),
+                    counter = document.getElementById("heroCounter"),
+                    nav = document.getElementById("nav");
+                let ticking = false;
+                const clamp = (n, min = 0, max = 1) => Math.max(min, Math.min(max, n));
+                function render() {
+                    const max = hero.offsetHeight - innerHeight;
+                    const p = clamp(-hero.getBoundingClientRect().top / (max || 1));
+                    const reveal = clamp((p - 0.025) / 0.28);
+                    const smooth = reveal * reveal * (3 - 2 * reveal);
+                    const exit = clamp((p - 0.82) / 0.18);
+                    bg.style.opacity = String(clamp(reveal * 2.4));
+                    bg.style.transform = `scale(${1.13 - 0.13 * smooth}) translate3d(0,${p * -1.5}%,0)`;
+                    content.style.opacity = String(clamp((p - 0.015) / 0.1) * (1 - exit));
+                    content.style.transform = `translate3d(0,${(1 - smooth) * 16 - exit * 24}px,0)`;
+                    const shellIn = clamp((p - 0.025) / 0.15);
+                    const shellOut = 1 - clamp((p - 0.68) / 0.17);
+                    shellMark.style.opacity = String(shellIn * shellOut);
+                    shellMark.style.transform = `translate3d(-50%,${(1 - shellIn) * 12 - exit * 10}px,0) scale(${0.94 + 0.06 * shellIn})`;
+                    const strikeIn = clamp((p - 0.055) / 0.18);
+                    const strikeOut = 1 - clamp((p - 0.72) / 0.16);
+                    mark.style.opacity = String(strikeIn * strikeOut);
+                    mark.style.transform = `translate3d(-50%,${(1 - strikeIn) * 18 - exit * 12}px,0) scale(${0.92 + 0.08 * strikeIn})`;
+                    vignette.style.opacity = String(0.45 + smooth * 0.55);
+                    grid.style.opacity = String(smooth * 0.45);
+                    frame.style.opacity = String(smooth);
+                    cue.style.opacity = String(clamp((p - 0.2) / 0.18) * (1 - exit));
+                    counter.style.opacity = String(smooth);
+                    counter.innerHTML = `<b>${p < 0.34 ? "01" : p < 0.68 ? "02" : "03"}</b> / 03`;
+                    nav.classList.toggle("scrolled", window.scrollY > 30);
+                    ticking = false;
+                }
+                function onScroll() {
+                    if (!ticking) {
+                        requestAnimationFrame(render);
+                        ticking = true;
+                    }
+                }
+                window.addEventListener("scroll", onScroll, { passive: true });
+                window.addEventListener("resize", onScroll);
+                render();
+                const observer = new IntersectionObserver(
+                    (entries) =>
+                        entries.forEach((e) => {
+                            if (e.isIntersecting) {
+                                e.target.classList.add("visible");
+                                observer.unobserve(e.target);
+                            }
+                        }),
+                    { threshold: 0.12 }
+                );
+                document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+                const toggle = document.getElementById("menuToggle"),
+                    links = document.getElementById("navLinks");
+                toggle.addEventListener("click", () => {
+                    links.classList.toggle("open");
+                    toggle.textContent = links.classList.contains("open") ? "×" : "☰";
+                });
+                links.querySelectorAll("a").forEach((a) =>
+                    a.addEventListener("click", () => {
+                        links.classList.remove("open");
+                        toggle.textContent = "☰";
+                    })
+                );
+                document.getElementById("year").textContent = new Date().getFullYear();
+            })();
+        </script>
+    </body>
+</html>
+
