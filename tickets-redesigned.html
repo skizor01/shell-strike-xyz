@@ -1,0 +1,1254 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#05070d" />
+        <meta
+            name="description"
+            content="Submit player reports, bug reports, appeals, and support requests to Shell Strike staff."
+        />
+        <title>Tickets & Reports | Shell Strike</title>
+        <style>
+            :root {
+                --blue: #087bff;
+                --blue2: #3156ff;
+                --ink: #05070d;
+                --white: #f5f7fb;
+                --muted: #9ba8bd;
+                --line: rgba(255, 255, 255, 0.14);
+                --panel: #080c16;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            html {
+                scroll-behavior: smooth;
+                scrollbar-color: var(--blue) #080b13;
+            }
+            body {
+                margin: 0;
+                background: var(--ink);
+                color: var(--white);
+                font-family:
+                    Inter,
+                    ui-sans-serif,
+                    system-ui,
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    "Segoe UI",
+                    sans-serif;
+                overflow-x: hidden;
+            }
+            body.ss-loading {
+                overflow: hidden;
+            }
+            a {
+                color: inherit;
+                text-decoration: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+            button,
+            input,
+            textarea,
+            select {
+                font: inherit;
+            }
+            button {
+                cursor: pointer;
+            }
+            ::selection {
+                background: var(--blue);
+                color: #fff;
+            }
+            .noise {
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                z-index: 20;
+                opacity: 0.025;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+            }
+            .ss-loader {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                background: #05070d;
+                display: grid;
+                place-items: center;
+                overflow: hidden;
+                visibility: visible;
+                opacity: 1;
+                transition:
+                    opacity 0.55s ease,
+                    visibility 0.55s ease;
+            }
+            .ss-loader.is-done {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+            .ss-loader:before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                opacity: 0.2;
+                background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+                background-size: 72px 72px;
+            }
+            .ss-loader-center {
+                position: relative;
+                text-align: center;
+                width: 100%;
+                padding: 24px;
+            }
+            .ss-loader-logo {
+                display: flex;
+                align-items: baseline;
+                justify-content: center;
+                gap: 0.15em;
+                font-family: Impact, "Arial Narrow", sans-serif;
+                font-size: clamp(58px, 12vw, 150px);
+                font-weight: 1000;
+                letter-spacing: -0.045em;
+                white-space: nowrap;
+            }
+            .ss-loader-shell {
+                color: #f5f7fb;
+            }
+            .ss-loader-strike {
+                color: #087bff;
+            }
+            .ss-loader-tag {
+                font:
+                    800 9px ui-monospace,
+                    monospace;
+                letter-spacing: 0.32em;
+                color: #8495ad;
+                margin-top: 22px;
+            }
+            .ss-loader-footer {
+                position: absolute;
+                left: 24px;
+                right: 24px;
+                bottom: 25px;
+                display: flex;
+                justify-content: space-between;
+                font:
+                    700 9px ui-monospace,
+                    monospace;
+                letter-spacing: 0.13em;
+                color: #63718a;
+            }
+            .ss-loader-progress {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                height: 3px;
+                background: rgba(255, 255, 255, 0.08);
+            }
+            .ss-loader-progress i {
+                display: block;
+                width: 0;
+                height: 100%;
+                background: #087bff;
+                box-shadow: 0 0 18px rgba(8, 123, 255, 0.65);
+                animation: ss-simple-progress 2.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+            }
+            @keyframes ss-simple-progress {
+                to {
+                    width: 100%;
+                }
+            }
+            @media (max-width: 700px) {
+                .ss-loader-footer {
+                    left: 12px;
+                    right: 12px;
+                    bottom: 18px;
+                    font-size: 7px;
+                    letter-spacing: 0.06em;
+                }
+                .ss-loader-logo {
+                    font-size: clamp(45px, 11vw, 75px);
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .ss-loader-progress i {
+                    animation-duration: 0.4s;
+                }
+                html {
+                    scroll-behavior: auto;
+                }
+                *,
+                *:before,
+                *:after {
+                    transition-duration: 0.01ms !important;
+                    animation-duration: 0.01ms !important;
+                }
+            }
+            .nav {
+                position: sticky;
+                top: 0;
+                z-index: 30;
+                height: 76px;
+                padding: 0 clamp(20px, 5vw, 76px);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 20px;
+                background: rgba(5, 7, 13, 0.86);
+                backdrop-filter: blur(18px);
+                border-bottom: 1px solid var(--line);
+            }
+            .nav-brand {
+                display: flex;
+                align-items: center;
+                width: 154px;
+                height: 56px;
+                flex: 0 0 auto;
+            }
+            .nav-brand img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: clamp(12px, 2vw, 28px);
+                font-size: 10px;
+                font-weight: 850;
+                text-transform: uppercase;
+                letter-spacing: 0.09em;
+                color: #c5ccda;
+            }
+            .nav-links a {
+                transition: color 0.2s;
+            }
+            .nav-links a:hover,
+            .nav-links a[aria-current="page"] {
+                color: #fff;
+            }
+            .nav-cta,
+            .button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                padding: 13px 18px;
+                background: var(--blue);
+                color: #fff;
+                font-weight: 900;
+                font-size: 10px;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                border: 1px solid var(--blue);
+                clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+                transition:
+                    transform 0.2s,
+                    background 0.2s;
+            }
+            .nav-cta:hover,
+            .button:hover {
+                transform: translateY(-2px);
+                background: #3190ff;
+            }
+            .menu-toggle {
+                display: none;
+                background: none;
+                border: 0;
+                color: white;
+                font-size: 25px;
+            }
+            .hero {
+                position: relative;
+                min-height: 340px;
+                padding: clamp(64px, 9vw, 116px) clamp(22px, 8vw, 120px) 68px;
+                overflow: hidden;
+                background: radial-gradient(ellipse at 78% 25%, rgba(8, 123, 255, 0.19), transparent 38%),
+                    linear-gradient(180deg, #070a12, #05070d);
+            }
+            .hero:before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+                background-size: 58px 58px;
+                mask-image: linear-gradient(#000, transparent 90%);
+                pointer-events: none;
+            }
+            .hero:after {
+                content: "SS / SUPPORT";
+                position: absolute;
+                right: -15px;
+                bottom: -42px;
+                font-size: clamp(90px, 20vw, 250px);
+                font-weight: 1000;
+                letter-spacing: -0.09em;
+                color: rgba(255, 255, 255, 0.025);
+                white-space: nowrap;
+                pointer-events: none;
+            }
+            .hero-inner {
+                position: relative;
+                z-index: 1;
+                max-width: 1450px;
+                margin: auto;
+            }
+            .kicker,
+            .section-kicker {
+                color: var(--blue);
+                font-size: 10px;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                font-weight: 950;
+            }
+            h1,
+            h2,
+            h3,
+            p {
+                margin-top: 0;
+            }
+            .hero h1 {
+                font-size: clamp(48px, 9vw, 108px);
+                line-height: 0.86;
+                letter-spacing: -0.08em;
+                text-transform: uppercase;
+                margin: 20px 0 24px;
+                font-weight: 1000;
+            }
+            .outline {
+                color: transparent;
+                -webkit-text-stroke: 1px rgba(255, 255, 255, 0.72);
+            }
+            .hero-copy {
+                max-width: 610px;
+                color: var(--muted);
+                font-size: 14px;
+                line-height: 1.8;
+                margin: 0;
+            }
+            main {
+                max-width: 1500px;
+                margin: 0 auto;
+                width: 100%;
+            }
+            .report-layout {
+                display: grid;
+                grid-template-columns: minmax(230px, 0.72fr) minmax(0, 1.5fr);
+                gap: clamp(22px, 4vw, 54px);
+                padding: clamp(35px, 6vw, 76px) clamp(22px, 5vw, 76px) 90px;
+            }
+            .intro-panel {
+                align-self: start;
+                position: sticky;
+                top: 105px;
+                border: 1px solid var(--line);
+                padding: 24px;
+                background: radial-gradient(ellipse at 0 0, rgba(8, 123, 255, 0.12), transparent 65%), #080b13;
+            }
+            .intro-panel h2 {
+                font-size: clamp(24px, 3vw, 36px);
+                line-height: 0.98;
+                letter-spacing: -0.06em;
+                text-transform: uppercase;
+                margin: 13px 0;
+            }
+            .intro-panel p {
+                font-size: 12px;
+                line-height: 1.8;
+                color: var(--muted);
+            }
+            .process-list {
+                display: grid;
+                gap: 15px;
+                margin: 22px 0 0;
+                padding: 0;
+                list-style: none;
+            }
+            .process-list li {
+                display: flex;
+                gap: 12px;
+                align-items: flex-start;
+                color: #c8d1e0;
+                font-size: 11px;
+                line-height: 1.65;
+            }
+            .process-list b {
+                color: var(--blue);
+                font:
+                    900 10px ui-monospace,
+                    monospace;
+                min-width: 24px;
+            }
+            .privacy-note {
+                margin-top: 24px;
+                padding-top: 18px;
+                border-top: 1px solid var(--line);
+                color: #7f90aa;
+                font-size: 10px;
+                line-height: 1.7;
+            }
+            .form-panel {
+                min-width: 0;
+            }
+            .panel-heading {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                gap: 18px;
+                margin-bottom: 22px;
+            }
+            .panel-heading h2 {
+                font-size: clamp(28px, 4vw, 48px);
+                line-height: 0.95;
+                letter-spacing: -0.065em;
+                text-transform: uppercase;
+                margin: 10px 0 0;
+            }
+            .panel-index {
+                font:
+                    800 10px ui-monospace,
+                    monospace;
+                letter-spacing: 0.12em;
+                color: #6f829f;
+                white-space: nowrap;
+            }
+            .category-grid {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 10px;
+                margin-bottom: 24px;
+            }
+            .category-card {
+                position: relative;
+                min-height: 112px;
+                text-align: left;
+                padding: 15px 13px;
+                border: 1px solid var(--line);
+                background: linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.008));
+                color: var(--white);
+                transition:
+                    border-color 0.2s,
+                    background 0.2s,
+                    transform 0.2s;
+            }
+            .category-card:hover {
+                transform: translateY(-2px);
+                border-color: rgba(8, 123, 255, 0.65);
+            }
+            .category-card[aria-pressed="true"] {
+                border-color: var(--blue);
+                background: radial-gradient(ellipse at 0 0, rgba(8, 123, 255, 0.2), transparent 75%), #0a1020;
+            }
+            .cat-number {
+                display: block;
+                color: var(--blue);
+                font:
+                    900 9px ui-monospace,
+                    monospace;
+                letter-spacing: 0.12em;
+                margin-bottom: 13px;
+            }
+            .cat-name {
+                display: block;
+                font-size: 12px;
+                font-weight: 900;
+                letter-spacing: -0.02em;
+                text-transform: uppercase;
+            }
+            .cat-desc {
+                display: block;
+                margin-top: 6px;
+                color: var(--muted);
+                font-size: 10px;
+                line-height: 1.45;
+            }
+            .form-card {
+                border: 1px solid var(--line);
+                background: linear-gradient(145deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.008));
+                padding: clamp(18px, 3vw, 30px);
+            }
+            .form-card[hidden] {
+                display: none;
+            }
+            .form-section-label {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                color: var(--blue);
+                font:
+                    900 10px ui-monospace,
+                    monospace;
+                letter-spacing: 0.13em;
+                text-transform: uppercase;
+                margin: 0 0 18px;
+            }
+            .form-section-label:after {
+                content: "";
+                height: 1px;
+                background: var(--line);
+                flex: 1;
+            }
+            .field-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 16px;
+            }
+            .field {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                min-width: 0;
+            }
+            .field.full {
+                grid-column: 1/-1;
+            }
+            label {
+                font-size: 10px;
+                font-weight: 850;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                color: #d8e1ef;
+            }
+            .optional {
+                color: #7d8da5;
+                font-weight: 600;
+                letter-spacing: 0;
+                text-transform: none;
+            }
+            input,
+            textarea,
+            select {
+                width: 100%;
+                min-width: 0;
+                border: 1px solid rgba(255, 255, 255, 0.14);
+                border-radius: 0;
+                background: #080b13;
+                color: var(--white);
+                padding: 13px 14px;
+                outline: none;
+                transition:
+                    border-color 0.2s,
+                    box-shadow 0.2s;
+            }
+            input:focus,
+            textarea:focus,
+            select:focus {
+                border-color: var(--blue);
+                box-shadow: 0 0 0 3px rgba(8, 123, 255, 0.12);
+            }
+            input::placeholder,
+            textarea::placeholder {
+                color: #62718a;
+            }
+            textarea {
+                min-height: 128px;
+                resize: vertical;
+                line-height: 1.65;
+            }
+            input[type="file"] {
+                padding: 12px;
+                font-size: 11px;
+            }
+            input[type="file"]::file-selector-button {
+                border: 1px solid rgba(8, 123, 255, 0.6);
+                background: rgba(8, 123, 255, 0.12);
+                color: #d9eaff;
+                padding: 8px 10px;
+                margin-right: 12px;
+                cursor: pointer;
+            }
+            .help {
+                color: #7f90aa;
+                font-size: 10px;
+                line-height: 1.6;
+                margin: 0;
+            }
+            .field-spacer {
+                margin-top: 24px;
+            }
+            .turnstile-wrap {
+                margin-top: 22px;
+                min-height: 0;
+            }
+            .submit-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 18px;
+                flex-wrap: wrap;
+                margin-top: 24px;
+                padding-top: 20px;
+                border-top: 1px solid var(--line);
+            }
+            .submit {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                min-width: 180px;
+                padding: 15px 20px;
+                border: 1px solid var(--blue);
+                background: var(--blue);
+                color: white;
+                font-size: 10px;
+                font-weight: 950;
+                letter-spacing: 0.12em;
+                text-transform: uppercase;
+                clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+                transition:
+                    background 0.2s,
+                    transform 0.2s;
+            }
+            .submit:hover:not(:disabled) {
+                background: #3190ff;
+                transform: translateY(-2px);
+            }
+            .submit:disabled {
+                opacity: 0.55;
+                cursor: not-allowed;
+            }
+            .submit-note {
+                max-width: 300px;
+                color: #7f90aa;
+                font-size: 10px;
+                line-height: 1.65;
+            }
+            .form-status {
+                display: none;
+                margin-top: 18px;
+                padding: 15px 17px;
+                border: 1px solid var(--line);
+                font-size: 12px;
+                line-height: 1.65;
+                overflow-wrap: anywhere;
+            }
+            .form-status.show {
+                display: block;
+            }
+            .form-status.success {
+                border-color: rgba(70, 210, 140, 0.4);
+                background: rgba(70, 210, 140, 0.06);
+                color: #b8f5d5;
+            }
+            .form-status.error {
+                border-color: rgba(255, 90, 90, 0.45);
+                background: rgba(255, 90, 90, 0.06);
+                color: #ffc2c2;
+            }
+            .form-status.info {
+                border-color: rgba(8, 123, 255, 0.4);
+                background: rgba(8, 123, 255, 0.06);
+                color: #c8e2ff;
+            }
+            .divider {
+                height: 1px;
+                background: linear-gradient(90deg, transparent, var(--line), transparent);
+            }
+            .footer {
+                padding: 28px clamp(22px, 5vw, 76px);
+                border-top: 1px solid var(--line);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 20px;
+                color: #8f9ab0;
+                font-size: 11px;
+            }
+            .footer-brand {
+                display: flex;
+                align-items: center;
+                width: 132px;
+                height: 48px;
+            }
+            .footer-brand img {
+                display: block;
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+            .footer-links {
+                display: flex;
+                gap: 18px;
+                flex-wrap: wrap;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-weight: 800;
+                font-size: 10px;
+            }
+            .footer-links a:hover {
+                color: white;
+            }
+            .reveal {
+                animation: reveal-in 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+            }
+            @keyframes reveal-in {
+                from {
+                    opacity: 0;
+                    transform: translateY(16px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            @media (max-width: 1050px) {
+                .nav-links {
+                    gap: 12px;
+                    font-size: 9px;
+                }
+                .nav-cta {
+                    padding: 11px 12px;
+                }
+                .category-grid {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+            }
+            @media (max-width: 800px) {
+                .nav {
+                    height: 66px;
+                }
+                .nav-brand {
+                    width: 118px;
+                    height: 48px;
+                }
+                .menu-toggle {
+                    display: block;
+                }
+                .nav-cta {
+                    display: none;
+                }
+                .nav-links {
+                    display: none;
+                    position: absolute;
+                    top: 65px;
+                    left: 0;
+                    right: 0;
+                    padding: 22px;
+                    background: rgba(5, 7, 13, 0.98);
+                    flex-direction: column;
+                    align-items: flex-start;
+                    border-bottom: 1px solid var(--line);
+                }
+                .nav-links.open {
+                    display: flex;
+                }
+                .report-layout {
+                    grid-template-columns: 1fr;
+                }
+                .intro-panel {
+                    position: relative;
+                    top: auto;
+                }
+                .footer {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+            }
+            @media (max-width: 520px) {
+                .hero {
+                    min-height: 300px;
+                }
+                .hero h1 {
+                    font-size: clamp(46px, 14vw, 68px);
+                }
+                .category-grid {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                    gap: 8px;
+                }
+                .category-card {
+                    min-height: 105px;
+                    padding: 12px;
+                }
+                .field-grid {
+                    grid-template-columns: 1fr;
+                }
+                .field.full {
+                    grid-column: auto;
+                }
+                .panel-heading {
+                    align-items: flex-start;
+                    flex-direction: column;
+                }
+                .submit {
+                    width: 100%;
+                }
+                .submit-note {
+                    max-width: none;
+                }
+            }
+        </style>
+    </head>
+    <body class="ss-loading">
+        <div class="ss-loader" id="ssLoader" aria-label="Loading Shell Strike">
+            <div class="ss-loader-center">
+                <div class="ss-loader-logo">
+                    <span class="ss-loader-shell">SHELL</span><span class="ss-loader-strike">STRIKE</span>
+                </div>
+                <div class="ss-loader-tag">LOCK IN. WIN BIG.</div>
+            </div>
+            <div class="ss-loader-footer"><span>SHELL STRIKE // ARENA SYSTEM</span><span>INITIALIZING</span></div>
+            <div class="ss-loader-progress"><i id="ssLoaderProgress"></i></div>
+        </div>
+        <div class="noise" aria-hidden="true"></div>
+
+        <header class="nav">
+            <a class="nav-brand" href="index.html" aria-label="Shell Strike home"
+                ><img src="assets/logo.png" alt="Shell Strike"
+            /></a>
+            <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+                <a href="index.html">Home</a><a href="staff.html">Staff</a><a href="past-seasons.html">Past seasons</a
+                ><a href="leaderboard.html">Leaderboard</a><a href="staff_app.html">Staff application</a
+                ><a href="tickets.html" aria-current="page">Tickets / reports</a>
+            </nav>
+            <div style="display: flex; align-items: center; gap: 14px">
+                <a class="nav-cta" href="https://discord.gg/shellstrike">Join the server ↗</a>
+                <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">
+                    ☰
+                </button>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="hero-inner">
+                <div class="kicker">Shell Strike / Support portal</div>
+                <h1>RAISE THE<br /><span class="outline">ISSUE.</span></h1>
+                <p class="hero-copy">
+                    Player reports, bug reports, appeals, and support requests. Give staff the details they need to
+                    review it properly.
+                </p>
+            </div>
+        </section>
+
+        <main>
+            <div class="report-layout">
+                <aside class="intro-panel reveal">
+                    <div class="section-kicker">01 / Before you submit</div>
+                    <h2>Make it clear.<br /><span class="outline">Make it count.</span></h2>
+                    <p>
+                        Choose the closest category, include specific details, and attach evidence where possible.
+                        Reports are delivered privately to the Shell Strike staff team.
+                    </p>
+                    <ol class="process-list">
+                        <li><b>01</b><span>Pick the category that matches your issue.</span></li>
+                        <li><b>02</b><span>Explain what happened, with names and match details if relevant.</span></li>
+                        <li><b>03</b><span>Add evidence links or upload screenshots and clips.</span></li>
+                        <li><b>04</b><span>Save the reference ID shown after successful submission.</span></li>
+                    </ol>
+                    <div class="privacy-note">
+                        Submit genuine reports only. False or abusive reports may be ignored or handled under server
+                        rules. Do not upload passwords, private account data, or unrelated personal information.
+                    </div>
+                </aside>
+
+                <section class="form-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <div class="section-kicker">02 / Submit a report</div>
+                            <h2>What's the issue?</h2>
+                        </div>
+                        <span class="panel-index">SS / SUPPORT DESK</span>
+                    </div>
+
+                    <div class="category-grid" role="group" aria-label="Report category">
+                        <button class="category-card" type="button" data-category="Player Report" aria-pressed="false">
+                            <span class="cat-number">TYPE / 01</span><span class="cat-name">Player report</span
+                            ><span class="cat-desc">Rule breaks or misconduct</span>
+                        </button>
+                        <button class="category-card" type="button" data-category="Bug Report" aria-pressed="false">
+                            <span class="cat-number">TYPE / 02</span><span class="cat-name">Bug report</span
+                            ><span class="cat-desc">Something isn't working</span>
+                        </button>
+                        <button class="category-card" type="button" data-category="Appeal" aria-pressed="false">
+                            <span class="cat-number">TYPE / 03</span><span class="cat-name">Appeal</span
+                            ><span class="cat-desc">Request a punishment review</span>
+                        </button>
+                        <button class="category-card" type="button" data-category="Other" aria-pressed="false">
+                            <span class="cat-number">TYPE / 04</span><span class="cat-name">Other</span
+                            ><span class="cat-desc">Questions and other issues</span>
+                        </button>
+                    </div>
+
+                    <form class="form-card" id="ticketForm" hidden>
+                        <input type="hidden" name="category" id="categoryInput" />
+                        <div class="form-section-label">Your details</div>
+                        <div class="field-grid">
+                            <div class="field">
+                                <label for="discordName">Discord username *</label
+                                ><input
+                                    id="discordName"
+                                    name="discordName"
+                                    type="text"
+                                    maxlength="80"
+                                    placeholder="e.g. skizor04"
+                                    autocomplete="off"
+                                    required
+                                />
+                            </div>
+                            <div class="field">
+                                <label for="contact">Discord user ID <span class="optional">(optional)</span></label
+                                ><input
+                                    id="contact"
+                                    name="discordId"
+                                    type="text"
+                                    inputmode="numeric"
+                                    maxlength="24"
+                                    placeholder="Your numeric Discord ID"
+                                />
+                            </div>
+                            <div class="field full">
+                                <label for="subject">Short summary *</label
+                                ><input
+                                    id="subject"
+                                    name="subject"
+                                    type="text"
+                                    maxlength="120"
+                                    placeholder="Summarise the issue in one sentence"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div class="form-section-label field-spacer">Issue details</div>
+                        <div class="field-grid">
+                            <div class="field" id="targetField">
+                                <label for="target">Player / subject <span class="optional">(if relevant)</span></label
+                                ><input
+                                    id="target"
+                                    name="target"
+                                    type="text"
+                                    maxlength="100"
+                                    placeholder="Player name or subject"
+                                />
+                            </div>
+                            <div class="field" id="matchField">
+                                <label for="matchInfo"
+                                    >Match ID / link <span class="optional">(if relevant)</span></label
+                                ><input
+                                    id="matchInfo"
+                                    name="matchInfo"
+                                    type="text"
+                                    maxlength="300"
+                                    placeholder="Match ID, lobby, or game link"
+                                />
+                            </div>
+                            <div class="field full" id="reasonField">
+                                <label for="reason"
+                                    >Reason / issue type <span class="optional">(if relevant)</span></label
+                                ><input
+                                    id="reason"
+                                    name="reason"
+                                    type="text"
+                                    maxlength="120"
+                                    placeholder="e.g. cheating, abusive chat, ban appeal"
+                                />
+                            </div>
+                            <div class="field full">
+                                <label for="details">What happened? *</label
+                                ><textarea
+                                    id="details"
+                                    name="details"
+                                    maxlength="3000"
+                                    placeholder="Include what happened, when it happened, and any useful context. For bug reports, include steps to reproduce it."
+                                    required
+                                ></textarea>
+                                <p class="help">
+                                    Be specific and factual. Avoid submitting multiple unrelated issues in one report.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="form-section-label field-spacer">Evidence</div>
+                        <div class="field-grid">
+                            <div class="field full">
+                                <label for="evidenceLinks"
+                                    >Evidence links <span class="optional">(optional)</span></label
+                                ><textarea
+                                    id="evidenceLinks"
+                                    name="evidenceLinks"
+                                    maxlength="1200"
+                                    placeholder="Paste one link per line: screenshots, video clips, or other relevant evidence"
+                                ></textarea>
+                                <p class="help">
+                                    Use links that staff can access. Do not share links containing passwords or private
+                                    tokens.
+                                </p>
+                            </div>
+                            <div class="field full">
+                                <label for="evidenceFiles"
+                                    >Upload screenshots or clips <span class="optional">(optional)</span></label
+                                ><input
+                                    id="evidenceFiles"
+                                    name="evidenceFiles"
+                                    type="file"
+                                    multiple
+                                    accept="image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime,application/pdf"
+                                />
+                                <p class="help">
+                                    Up to 4 files, 8 MB each, 20 MB total. Accepted: PNG, JPG, WebP, GIF, MP4, WebM,
+                                    MOV, PDF. Discord's upload limits still apply.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="turnstile-wrap">
+                            <div id="turnstile-container"></div>
+                            <p class="help" id="captchaHelp">Anti-spam verification is required before submitting.</p>
+                        </div>
+                        <div class="submit-row">
+                            <button class="submit" type="submit" id="submitBtn">Submit report <span>↗</span></button>
+                            <p class="submit-note">
+                                Submissions are sent privately to staff. Please save your reference ID after submitting.
+                            </p>
+                        </div>
+                    </form>
+                    <div class="form-status" id="formStatus" role="status" aria-live="polite"></div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <a class="footer-brand" href="index.html" aria-label="Shell Strike home"
+                ><img src="assets/logo.png" alt="Shell Strike"
+            /></a>
+            <span>Built and managed by skizor04. © <span id="year"></span> Shell Strike.</span>
+            <div class="footer-links">
+                <a href="index.html">Home</a><a href="staff.html">Staff</a><a href="leaderboard.html">Leaderboard</a
+                ><a href="https://discord.gg/shellstrike">Discord ↗</a>
+            </div>
+        </footer>
+
+        <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+        <script>
+            (() => {
+                // Match homepage loader: wait for window load, then run the 2.6s progress and fade.
+                const ssLoader = document.getElementById("ssLoader");
+                const ssProgress = document.getElementById("ssLoaderProgress");
+                let ssLoaderDismissStarted = false;
+                function dismissShellStrikeLoader() {
+                    if (!ssLoader || ssLoaderDismissStarted) return;
+                    ssLoaderDismissStarted = true;
+                    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                    const duration = reduced ? 400 : 2600;
+                    if (ssProgress) {
+                        ssProgress.style.animation = "none";
+                        ssProgress.style.width = "0";
+                        void ssProgress.offsetWidth;
+                        ssProgress.style.transition = `width ${duration}ms cubic-bezier(.65,0,.35,1)`;
+                        requestAnimationFrame(() => {
+                            ssProgress.style.width = "100%";
+                        });
+                    }
+                    window.setTimeout(() => {
+                        ssLoader.classList.add("is-done");
+                        document.body.classList.remove("ss-loading");
+                    }, duration + 80);
+                }
+                if (document.readyState === "complete") dismissShellStrikeLoader();
+                else window.addEventListener("load", dismissShellStrikeLoader, { once: true });
+                window.setTimeout(dismissShellStrikeLoader, 4500);
+
+                const WORKER_ENDPOINT = "https://shell-strike-reports.alston-v-abraham19.workers.dev/submit";
+                const TURNSTILE_SITE_KEY = "0x4AAAAAAFqBoQ1sM-NdgUPt";
+                const form = document.getElementById("ticketForm");
+                const categoryInput = document.getElementById("categoryInput");
+                const statusBox = document.getElementById("formStatus");
+                const submitBtn = document.getElementById("submitBtn");
+                const fileInput = document.getElementById("evidenceFiles");
+                let selectedCategory = "";
+                let turnstileWidgetId = null;
+                let turnstileToken = "";
+                let captchaRendered = false;
+
+                const categories = {
+                    "Player Report": {
+                        target: true,
+                        match: true,
+                        reason: true,
+                        reasonPlaceholder: "e.g. cheating, abusive chat, griefing",
+                    },
+                    "Bug Report": {
+                        target: false,
+                        match: true,
+                        reason: true,
+                        reasonPlaceholder: "e.g. login issue, queue bug, scoring error",
+                    },
+                    Appeal: {
+                        target: false,
+                        match: false,
+                        reason: true,
+                        reasonPlaceholder: "e.g. ban, mute, ELO penalty",
+                    },
+                    Other: {
+                        target: false,
+                        match: false,
+                        reason: true,
+                        reasonPlaceholder: "What kind of help do you need?",
+                    },
+                };
+
+                function setStatus(kind, message) {
+                    statusBox.className = "form-status show " + kind;
+                    statusBox.textContent = message;
+                }
+
+                function updateCategory(category) {
+                    selectedCategory = category;
+                    categoryInput.value = category;
+                    document.querySelectorAll(".category-card").forEach((button) => {
+                        button.setAttribute("aria-pressed", String(button.dataset.category === category));
+                    });
+                    form.hidden = false;
+                    statusBox.className = "form-status";
+                    const config = categories[category];
+                    document.getElementById("targetField").hidden = !config.target;
+                    document.getElementById("matchField").hidden = !config.match;
+                    document.getElementById("reasonField").hidden = !config.reason;
+                    document.getElementById("reason").placeholder = config.reasonPlaceholder;
+                    form.scrollIntoView({ behavior: "smooth", block: "start" });
+                    ensureTurnstile();
+                }
+
+                document.querySelectorAll(".category-card").forEach((button) => {
+                    button.addEventListener("click", () => updateCategory(button.dataset.category));
+                });
+
+                function ensureTurnstile() {
+                    if (captchaRendered) return;
+                    if (TURNSTILE_SITE_KEY.startsWith("REPLACE_")) {
+                        document.getElementById("captchaHelp").textContent =
+                            "Setup required: add your Cloudflare Turnstile site key in tickets.html before publishing.";
+                        return;
+                    }
+                    const tryRender = () => {
+                        if (captchaRendered || !window.turnstile) return false;
+                        turnstileWidgetId = window.turnstile.render("#turnstile-container", {
+                            sitekey: TURNSTILE_SITE_KEY,
+                            theme: "dark",
+                            callback: (token) => {
+                                turnstileToken = token;
+                            },
+                            "expired-callback": () => {
+                                turnstileToken = "";
+                            },
+                            "error-callback": () => {
+                                turnstileToken = "";
+                            },
+                        });
+                        captchaRendered = true;
+                        return true;
+                    };
+                    if (tryRender()) return;
+                    let attempts = 0;
+                    const waitForApi = () => {
+                        if (tryRender() || attempts++ > 40) return;
+                        window.setTimeout(waitForApi, 250);
+                    };
+                    waitForApi();
+                }
+
+                fileInput.addEventListener("change", () => {
+                    const files = [...fileInput.files];
+                    const total = files.reduce((sum, file) => sum + file.size, 0);
+                    if (
+                        files.length > 4 ||
+                        files.some((file) => file.size > 8 * 1024 * 1024) ||
+                        total > 20 * 1024 * 1024
+                    ) {
+                        fileInput.setCustomValidity(
+                            "Choose up to 4 files, no file larger than 8 MB, and no more than 20 MB total."
+                        );
+                    } else {
+                        fileInput.setCustomValidity("");
+                    }
+                    fileInput.reportValidity();
+                });
+
+                form.addEventListener("submit", async (event) => {
+                    event.preventDefault();
+                    if (!selectedCategory) {
+                        setStatus("error", "Choose a report category first.");
+                        return;
+                    }
+                    if (WORKER_ENDPOINT.includes("REPLACE_WITH")) {
+                        setStatus(
+                            "error",
+                            "Setup required: add your deployed Cloudflare Worker URL to tickets.html. See the setup guide included with this page."
+                        );
+                        return;
+                    }
+                    if (TURNSTILE_SITE_KEY.startsWith("REPLACE_") || !turnstileToken) {
+                        setStatus(
+                            "error",
+                            "Anti-spam verification is not ready or has expired. Configure Cloudflare Turnstile, complete the check, and try again."
+                        );
+                        ensureTurnstile();
+                        return;
+                    }
+                    if (!form.reportValidity()) return;
+
+                    const files = [...fileInput.files];
+                    const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+                    if (
+                        files.length > 4 ||
+                        files.some((file) => file.size > 8 * 1024 * 1024) ||
+                        totalBytes > 20 * 1024 * 1024
+                    ) {
+                        setStatus("error", "File limits exceeded. Use up to 4 files, 8 MB each, and 20 MB total.");
+                        return;
+                    }
+
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = "Sending report…";
+                    statusBox.className = "form-status";
+                    try {
+                        const payload = new FormData(form);
+                        payload.set("category", selectedCategory);
+                        payload.set("turnstileToken", turnstileToken);
+                        const response = await fetch(WORKER_ENDPOINT, { method: "POST", body: payload });
+                        const result = await response.json().catch(() => ({}));
+                        if (!response.ok)
+                            throw new Error(result.error || "The report could not be sent. Please try again later.");
+                        form.reset();
+                        turnstileToken = "";
+                        if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
+                        setStatus(
+                            "success",
+                            `Report submitted successfully. Your reference ID is ${result.referenceId}. Save this ID if you need to follow up. Staff will review the submission in private.`
+                        );
+                        statusBox.scrollIntoView({ behavior: "smooth", block: "center" });
+                    } catch (error) {
+                        setStatus("error", error.message || "Network error. Check your connection and try again.");
+                        if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
+                        turnstileToken = "";
+                    } finally {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = "Submit report <span>↗</span>";
+                    }
+                });
+
+                const toggle = document.getElementById("menuToggle");
+                const links = document.getElementById("navLinks");
+                toggle.addEventListener("click", () => {
+                    const open = links.classList.toggle("open");
+                    toggle.textContent = open ? "×" : "☰";
+                    toggle.setAttribute("aria-expanded", String(open));
+                });
+                links.querySelectorAll("a").forEach((link) =>
+                    link.addEventListener("click", () => {
+                        links.classList.remove("open");
+                        toggle.textContent = "☰";
+                        toggle.setAttribute("aria-expanded", "false");
+                    })
+                );
+                document.getElementById("year").textContent = new Date().getFullYear();
+            })();
+        </script>
+    </body>
+</html>
+
