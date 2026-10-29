@@ -10,7 +10,7 @@
     *{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--white);font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;min-height:100vh}
     a{color:inherit;text-decoration:none}.nav{height:76px;padding:0 clamp(20px,5vw,64px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{font-size:20px;font-weight:1000;letter-spacing:-.06em}.brand span{color:var(--blue)}
     .nav-right{display:flex;gap:16px;align-items:center;color:var(--muted);font-size:12px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 17px;border:1px solid var(--blue);background:var(--blue);color:#fff;font-size:11px;font-weight:950;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}.btn.secondary{background:transparent;border-color:var(--line)}.btn:disabled{opacity:.5;cursor:not-allowed}
-    main{width:min(1200px,calc(100% - 36px));margin:44px auto 80px}.eyebrow{font:900 11px ui-monospace,monospace;letter-spacing:.2em;text-transform:uppercase;color:#7bbaff}h1{font-size:clamp(34px,6vw,60px);letter-spacing:-.065em;line-height:1;margin:12px 0 10px;text-transform:uppercase}.sub{color:var(--muted);line-height:1.7}
+    main{width:min(1600px,calc(100% - 36px));margin:44px auto 80px}.eyebrow{font:900 11px ui-monospace,monospace;letter-spacing:.2em;text-transform:uppercase;color:#7bbaff}h1{font-size:clamp(54px,10vw,180px);font-weight:1000;letter-spacing:-.075em;line-height:.88;margin:20px 0 22px;text-transform:uppercase}h1 span{color:var(--blue)}.sub{color:var(--muted);line-height:1.7;font-size:clamp(15px,1.8vw,22px);max-width:900px}
     .login,.panel,.card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.01));padding:clamp(20px,3vw,30px)}.login{max-width:540px;margin:45px auto;text-align:center}.login p{color:var(--muted);line-height:1.8}.login .btn{width:100%;margin-top:14px}
     .panel{margin-top:28px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}.panel h2{margin:0;font-size:23px;letter-spacing:-.04em;text-transform:uppercase}.pill{font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:7px 10px;border:1px solid var(--line)}.pill.open{color:#72e5a3;border-color:rgba(114,229,163,.4)}.pill.closed{color:#ff9d9d;border-color:rgba(255,157,157,.4)}
     .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:25px}.field{display:flex;flex-direction:column;gap:9px}.wide{grid-column:1/-1}label{font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#cbd4e4}input,textarea,select{width:100%;padding:13px;background:#080c16;color:var(--white);border:1px solid var(--line);font:inherit}textarea{min-height:100px;resize:vertical;line-height:1.6}.toggle-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:17px 0;border-bottom:1px solid var(--line)}.toggle-copy strong{display:block}.toggle-copy span{display:block;color:var(--muted);font-size:12px;line-height:1.6;margin-top:5px}
@@ -35,9 +35,12 @@
     .btn:hover{transform:translateY(-2px);background:#3190ff}
     .btn.secondary{background:transparent;border-color:rgba(255,255,255,.25)}
     main{padding-top:76px}
-    .site-footer{padding:26px clamp(22px,5vw,76px);border-top:1px solid var(--line);display:flex;justify-content:flex-end;align-items:center;color:#8f9ab0;font-size:11px}
-    .site-footer a{text-transform:uppercase;letter-spacing:.1em;font-weight:800;transition:color .2s}
-    .site-footer a:hover{color:#fff}
+    .site-footer{padding:24px clamp(22px,5vw,76px);border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:24px;color:#fff;font-size:11px;flex-wrap:wrap}
+    .footer-brand{display:flex;align-items:center;gap:20px;min-width:0}
+    .footer-logo{display:block;width:154px;height:48px;object-fit:contain;object-position:left center;flex:0 0 auto}
+    .footer-credit{color:#fff;font-size:11px;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
+    .site-footer a{text-transform:uppercase;letter-spacing:.1em;font-weight:800;transition:color .2s;color:#fff}
+    .site-footer a:hover{color:#7bbaff}
     .ss-loader{position:fixed;inset:0;z-index:9999;background:#05070d;display:grid;place-items:center;overflow:hidden;visibility:visible;opacity:1;transition:opacity .55s ease,visibility .55s ease}
     .ss-loader.is-done{opacity:0;visibility:hidden;pointer-events:none}
     .ss-loader:before{content:"";position:absolute;inset:0;opacity:.2;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:72px 72px}
@@ -49,7 +52,7 @@
     .ss-loader-progress{position:absolute;left:0;bottom:0;width:100%;height:3px;background:rgba(255,255,255,.08)}
     .ss-loader-progress i{display:block;width:0;height:100%;background:#087bff;box-shadow:0 0 18px rgba(8,123,255,.65);animation:ss-simple-progress 2.6s cubic-bezier(.65,0,.35,1) forwards}
     @keyframes ss-simple-progress{to{width:100%}}
-    @media(max-width:700px){.nav{height:66px}.brand{width:118px;height:48px}.nav-right{gap:8px}.nav-right #userLabel{display:none}.user-avatar{width:32px;height:32px}.nav-right .btn{padding:11px 12px;font-size:10px}.site-footer{justify-content:center}.ss-loader-footer{left:12px;right:12px;bottom:18px;font-size:7px;letter-spacing:.06em}.ss-loader-logo{font-size:clamp(45px,11vw,75px)}main{padding-top:66px}}
+    @media(max-width:700px){.nav{height:66px}.brand{width:118px;height:48px}.nav-right{gap:8px}.nav-right #userLabel{display:none}.user-avatar{width:32px;height:32px}.nav-right .btn{padding:11px 12px;font-size:10px}.site-footer{justify-content:space-between;gap:14px}.footer-brand{gap:12px;flex-wrap:wrap}.footer-logo{width:120px;height:40px}.footer-credit{font-size:9px;letter-spacing:.04em}h1{font-size:clamp(44px,12vw,84px);line-height:.9;margin:18px 0}.ss-loader-footer{left:12px;right:12px;bottom:18px;font-size:7px;letter-spacing:.06em}.ss-loader-logo{font-size:clamp(45px,11vw,75px)}main{padding-top:66px}}
     @media(prefers-reduced-motion:reduce){.ss-loader-progress i{animation-duration:.4s}.btn{transition:none}}
 
   </style>
@@ -95,7 +98,7 @@
       </section>
     </div>
   </main>
-  <footer class="site-footer"><a href="/">Home</a></footer>
+  <footer class="site-footer"><div class="footer-brand"><img class="footer-logo" src="/assets/logo.png" alt="Shell Strike logo"><span class="footer-credit">Built and managed by skizor04</span></div><a href="/">Home</a></footer>
   <script>
     (() => {
       const loader = document.getElementById('ssLoader');
