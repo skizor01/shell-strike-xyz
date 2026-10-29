@@ -6,34 +6,47 @@
   <meta name="theme-color" content="#05070d">
   <title>Staff Applications | Shell Strike</title>
   <style>
-    :root{--blue:#087bff;--ink:#05070d;--white:#f5f7fb;--muted:#9ba8bd;--line:rgba(255,255,255,.14)}
-    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0,rgba(8,123,255,.16),transparent 50%),var(--ink);color:var(--white);font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;min-height:100vh}
-    a{color:inherit;text-decoration:none}.nav{height:76px;padding:0 clamp(20px,5vw,76px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
-    .brand{font-weight:1000;letter-spacing:-.06em;font-size:20px}.brand span{color:var(--blue)}.nav a:last-child{color:#b8d8ff;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.1em}
-    main{width:min(760px,calc(100% - 36px));margin:64px auto 90px}.kicker{color:#7bbaff;font:900 11px ui-monospace,monospace;letter-spacing:.2em;text-transform:uppercase}
-    h1{font-size:clamp(38px,7vw,68px);line-height:.96;letter-spacing:-.065em;text-transform:uppercase;margin:16px 0}.intro{color:var(--muted);line-height:1.8;max-width:620px}
-    form,.notice{margin-top:32px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012));padding:clamp(20px,4vw,34px)}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.field{display:flex;flex-direction:column;gap:8px}.wide{grid-column:1/-1}label{font-size:12px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:#d7deeb}
-    input,select,textarea{width:100%;background:#080c16;border:1px solid rgba(255,255,255,.16);border-radius:0;color:var(--white);padding:13px 14px;font:inherit;outline:none}textarea{min-height:130px;resize:vertical;line-height:1.6}input:focus,select:focus,textarea:focus{border-color:var(--blue)}.hint{font-size:12px;color:#7f8da4;line-height:1.6}
-    button{margin-top:22px;border:1px solid var(--blue);background:var(--blue);color:white;padding:15px 20px;font-size:12px;font-weight:950;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;width:100%}button:disabled{opacity:.5;cursor:not-allowed}
-    .status{margin-top:18px;color:#b8d8ff;font-size:14px;line-height:1.7}.status.error{color:#ff9d9d}.notice h2{margin:0 0 10px;text-transform:uppercase;letter-spacing:-.04em}.notice p{color:var(--muted);line-height:1.8;margin:0}
-    .hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
-    @media(max-width:600px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.nav{height:66px}main{margin-top:42px}}
+    :root{--blue:#087bff;--blue2:#3156ff;--ink:#05070d;--white:#f5f7fb;--muted:#9ba8bd;--line:rgba(255,255,255,.14)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scrollbar-color:var(--blue) #080b13}body{margin:0;background:var(--ink);color:var(--white);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh;overflow-x:hidden}body.ss-loading{overflow:hidden}
+    a{color:inherit;text-decoration:none}button,a{-webkit-tap-highlight-color:transparent}::selection{background:var(--blue);color:#fff}
+    .noise{position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+    .nav{position:sticky;z-index:30;top:0;width:100%;height:76px;padding:0 clamp(20px,5vw,76px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:rgba(5,7,13,.84);backdrop-filter:blur(18px)}
+    .nav-brand-image{display:flex;align-items:center;justify-content:flex-start;width:154px;height:56px;flex:0 0 auto}.nav-brand-image img{display:block;width:100%;height:100%;object-fit:contain;object-position:left center}.nav-links{display:flex;align-items:center;gap:clamp(18px,3vw,42px);font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.11em;color:#c5ccda}.nav-links a:hover,.footer-links a:hover{color:#fff}.nav-actions{display:flex;align-items:center;gap:14px}.nav-cta,.button{display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:14px 20px;background:var(--blue);color:#fff;font-weight:900;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--blue);clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));transition:transform .2s,background .2s}.nav-cta:hover,.button:hover{transform:translateY(-2px);background:#3190ff}.menu-toggle{display:none;background:none;border:0;color:white;font-size:25px}
+    main{width:min(1700px,calc(100% - 44px));margin:0 auto;padding:clamp(54px,6vw,90px) 0 clamp(70px,9vw,110px)}.kicker{color:var(--blue);font:950 11px ui-monospace,monospace;letter-spacing:.22em;text-transform:uppercase}h1.page-title{font-family:"Arial Black",Arial,Inter,ui-sans-serif,sans-serif;font-size:clamp(64px,13.3vw,220px);line-height:.82;letter-spacing:-.075em;text-transform:uppercase;margin:42px 0 34px;font-weight:1000;white-space:normal;max-width:100%;overflow-wrap:normal}h1.page-title .title-line{display:block;white-space:nowrap}h1.page-title .title-outline{color:transparent;-webkit-text-stroke:1.5px rgba(245,247,251,.78);paint-order:stroke fill}.intro{color:var(--muted);line-height:1.8;max-width:650px;font-size:15px}
+    form,.notice{margin-top:34px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.012));padding:clamp(22px,4vw,34px)}.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px 28px}.field{display:flex;flex-direction:column;gap:10px}.wide{grid-column:1/-1}label{font-size:12px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:#d7deeb}
+    input,select,textarea{width:100%;background:#080c16;border:1px solid rgba(255,255,255,.16);border-radius:0;color:var(--white);padding:17px 20px;font:inherit;font-size:16px;outline:none;min-height:58px}select{color-scheme:dark}textarea{min-height:165px;resize:vertical;line-height:1.6}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}.hint{font-size:12px;color:#7f8da4;line-height:1.6}
+    #submitButton{margin-top:28px;border:1px solid var(--blue);background:var(--blue);color:white;padding:17px 20px;font-size:12px;font-weight:950;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;width:100%;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));transition:background .2s,transform .2s}#submitButton:hover{background:#3190ff;transform:translateY(-2px)}#submitButton:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .status{margin-top:18px;color:#b8d8ff;font-size:14px;line-height:1.7}.status.error{color:#ff9d9d}.notice h2{margin:0 0 10px;text-transform:uppercase;letter-spacing:-.04em}.notice p{color:var(--muted);line-height:1.8;margin:0}.hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+    .footer{padding:28px clamp(22px,5vw,76px);border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:20px;color:#8f9ab0;font-size:11px}.footer-brand{display:inline-flex;align-items:center;flex:0 0 auto;width:154px;height:48px}.footer-brand img{display:block;width:100%;height:100%;object-fit:contain;object-position:left center}.footer-links{display:flex;gap:20px;text-transform:uppercase;letter-spacing:.1em;font-weight:800}.footer-links a:hover{color:white}
+    .ss-loader{position:fixed;inset:0;z-index:9999;background:#05070d;display:grid;place-items:center;overflow:hidden;visibility:visible;opacity:1;transition:opacity .55s ease,visibility .55s ease}.ss-loader.is-done{opacity:0;visibility:hidden;pointer-events:none}.ss-loader:before{content:"";position:absolute;inset:0;opacity:.2;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:72px 72px}.ss-loader-center{position:relative;text-align:center;width:100%;padding:24px}.ss-loader-logo{display:flex;align-items:baseline;justify-content:center;gap:.15em;font-family:Impact,"Arial Narrow",sans-serif;font-size:clamp(58px,12vw,150px);font-weight:1000;letter-spacing:-.045em;white-space:nowrap}.ss-loader-shell{color:#f5f7fb}.ss-loader-strike{color:#087bff}.ss-loader-tag{font:800 9px ui-monospace,monospace;letter-spacing:.32em;color:#8495ad;margin-top:22px}.ss-loader-footer{position:absolute;left:24px;right:24px;bottom:25px;display:flex;justify-content:space-between;font:700 9px ui-monospace,monospace;letter-spacing:.13em;color:#63718a}.ss-loader-progress{position:absolute;left:0;bottom:0;width:100%;height:3px;background:rgba(255,255,255,.08)}.ss-loader-progress i{display:block;width:0;height:100%;background:#087bff;box-shadow:0 0 18px rgba(8,123,255,.65);animation:ss-simple-progress 2.6s cubic-bezier(.65,0,.35,1) forwards}@keyframes ss-simple-progress{to{width:100%}}
+    @media(max-width:760px){.nav{height:66px}.nav-brand-image{width:118px;height:48px}.nav-links{display:none;position:absolute;top:65px;left:0;right:0;padding:24px;background:rgba(5,7,13,.97);flex-direction:column;align-items:flex-start;border-bottom:1px solid var(--line)}.nav-links.open{display:flex}.nav-cta{padding:11px 13px;font-size:10px}.menu-toggle{display:block}.footer{flex-direction:column;align-items:flex-start}.footer-brand{width:132px;height:42px}.footer-links{flex-wrap:wrap}}
+    @media(max-width:600px){main{width:calc(100% - 32px);padding-top:42px}.grid{grid-template-columns:1fr;gap:22px}.wide{grid-column:auto}form,.notice{padding:20px}input,select,textarea{padding:15px 16px}h1.page-title{font-size:clamp(50px,14vw,88px);letter-spacing:-.07em;line-height:.86;margin:30px 0 26px}.title-outline{-webkit-text-stroke-width:1px!important}.ss-loader-footer{left:12px;right:12px;bottom:18px;font-size:7px;letter-spacing:.06em}.ss-loader-logo{font-size:clamp(45px,11vw,75px)}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.ss-loader-progress i{animation-duration:.4s}}
   </style>
 </head>
-<body>
-  <header class="nav"><a class="brand" href="/">SHELL <span>STRIKE</span></a><a href="/">Home ↗</a></header>
+<body class="ss-loading">
+  <div class="ss-loader" id="ssLoader" aria-label="Loading Shell Strike">
+    <div class="ss-loader-center"><div class="ss-loader-logo"><span class="ss-loader-shell">SHELL</span><span class="ss-loader-strike">STRIKE</span></div><div class="ss-loader-tag">LOCK IN. WIN BIG.</div></div>
+    <div class="ss-loader-footer"><span>SHELL STRIKE // ARENA SYSTEM</span><span>INITIALIZING</span></div>
+    <div class="ss-loader-progress"><i id="ssLoaderProgress"></i></div>
+  </div>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="nav" id="nav">
+    <a class="nav-brand-image" href="/" aria-label="Shell Strike home"><img src="assets/logo.png" alt="Shell Strike logo"></a>
+    <nav class="nav-links" id="navLinks"><a href="/#game">The game</a><a href="/#features">How it works</a><a href="/#community">Community</a></nav>
+    <div class="nav-actions"><a class="nav-cta" href="/">Back to home <span>↗</span></a><button class="menu-toggle" id="menuToggle" aria-label="Open navigation">☰</button></div>
+  </header>
   <main>
     <div class="kicker">Shell Strike / Recruitment</div>
-    <h1>Join the<br><span style="color:var(--blue)">staff team.</span></h1>
+    <h1 class="page-title"><span class="title-line">STAFF</span><span class="title-line title-outline">APPLICATION.</span></h1>
     <p class="intro">Help keep Shell Strike competitive, welcoming, and organized. Tell us a little about yourself and where you'd like to contribute.</p>
     <div id="closedNotice" class="notice" hidden><h2>Applications are closed</h2><p id="closedMessage">Staff applications are currently closed. Check back later for updates.</p></div>
     <form id="applicationForm" hidden>
       <div class="grid">
-        <div class="field"><label for="ign">In-game name</label><input id="ign" name="ign" maxlength="40" required autocomplete="nickname" placeholder="Your Shell Shockers name"></div>
+        <div class="field"><label for="discordId">Discord user ID</label><input id="discordId" name="discordId" maxlength="24" inputmode="numeric" pattern="[0-9]{17,20}" required autocomplete="off" placeholder="e.g. 123456789012345678"><span class="hint">Enable Developer Mode in Discord, then right-click your profile and select Copy User ID.</span></div>
         <div class="field"><label for="discord">Discord username</label><input id="discord" name="discord" maxlength="80" required placeholder="@username"></div>
-        <div class="field wide"><label for="role">Preferred role</label><select id="role" name="role" required><option value="">Choose a role</option><option>Moderator</option><option>Event Staff</option><option>Community Staff</option><option>Support Staff</option><option>Other</option></select></div>
-        <div class="field wide"><label for="experience">Relevant experience</label><textarea id="experience" name="experience" minlength="10" maxlength="2000" required placeholder="Tell us about any moderation, event, community, or other relevant experience."></textarea><span class="hint">10–2000 characters</span></div>
+        <div class="field wide"><label for="role">Preferred role</label><select id="role" name="role" required><option value="">Choose a role</option><option>Scrim Host</option><option>GFX Staff</option><option>Content Staff</option></select></div>
+        <div class="field wide"><label for="experience">Relevant experience</label><textarea id="experience" name="experience" minlength="10" maxlength="2000" required placeholder="Tell us about any relevant experience."></textarea><span class="hint">10–2000 characters</span></div>
         <div class="field wide"><label for="motivation">Why do you want to join?</label><textarea id="motivation" name="motivation" minlength="20" maxlength="3000" required placeholder="What would you bring to Shell Strike?"></textarea><span class="hint">20–3000 characters</span></div>
         <div class="hp" aria-hidden="true"><label for="website">Leave this field empty</label><input id="website" name="website" tabindex="-1" autocomplete="off"></div>
       </div>
@@ -42,6 +55,43 @@
     </form>
     <div class="status" id="loadStatus" role="status" aria-live="polite">Loading application status…</div>
   </main>
+  <footer class="footer">
+    <a class="footer-brand" href="/" aria-label="Shell Strike home"><img src="assets/logo.png" alt="Shell Strike logo" loading="lazy"></a>
+    <span>Built and Managed by skizor04. © <span id="year"></span> Shell Strike.</span>
+    <div class="footer-links"><a href="/#game">The game</a><a href="/#features">How it works</a><a href="/#community">Community</a></div>
+  </footer>
+  <script>
+    (() => {
+      const loader = document.getElementById("ssLoader");
+      const progress = document.getElementById("ssLoaderProgress");
+      let dismissed = false;
+      function dismissLoader() {
+        if (!loader || dismissed) return;
+        dismissed = true;
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const duration = reduced ? 400 : 2600;
+        if (progress) {
+          progress.style.animation = "none";
+          progress.style.width = "0";
+          void progress.offsetWidth;
+          progress.style.transition = `width ${duration}ms cubic-bezier(.65,0,.35,1)`;
+          requestAnimationFrame(() => { progress.style.width = "100%"; });
+        }
+        window.setTimeout(() => { loader.classList.add("is-done"); document.body.classList.remove("ss-loading"); }, duration + 80);
+      }
+      if (document.readyState === "complete") dismissLoader();
+      else window.addEventListener("load", dismissLoader, { once: true });
+      window.setTimeout(dismissLoader, 4500);
+      const toggle = document.getElementById("menuToggle");
+      const links = document.getElementById("navLinks");
+      if (toggle && links) {
+        toggle.addEventListener("click", () => { links.classList.toggle("open"); toggle.textContent = links.classList.contains("open") ? "×" : "☰"; });
+        links.querySelectorAll("a").forEach(a => a.addEventListener("click", () => { links.classList.remove("open"); toggle.textContent = "☰"; }));
+      }
+      const year = document.getElementById("year");
+      if (year) year.textContent = new Date().getFullYear();
+    })();
+  </script>
   <script type="module" src="./staff.js"></script>
 </body>
 </html>
