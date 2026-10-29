@@ -110,11 +110,25 @@ async function routeAuth() {
   $("#dashboard").classList.add("hidden");
   $("#signOutButton").classList.add("hidden");
   $("#userLabel").textContent = "";
+  const avatar = $("#userAvatar");
+  avatar.removeAttribute("src");
+  avatar.classList.remove("visible");
+  avatar.onerror = () => { avatar.removeAttribute("src"); avatar.classList.remove("visible"); };
   if (!user) {
     $("#loginPanel").classList.remove("hidden");
     return;
   }
-  $("#userLabel").textContent = user.user_metadata?.full_name || user.user_metadata?.name || user.email || "Signed in";
+  const metadata = user.user_metadata || {};
+  $("#userLabel").textContent = metadata.full_name || metadata.name || metadata.global_name || metadata.preferred_username || user.email || "Signed in";
+  const discordAvatar = metadata.avatar_url || metadata.picture || metadata.avatarUrl || metadata.photo_url;
+  if (discordAvatar && typeof discordAvatar === "string") {
+    avatar.src = discordAvatar;
+    avatar.classList.add("visible");
+  } else if (metadata.avatar && (metadata.provider_id || metadata.sub)) {
+    const discordId = metadata.provider_id || metadata.sub;
+    avatar.src = `https://cdn.discordapp.com/avatars/${encodeURIComponent(discordId)}/${encodeURIComponent(metadata.avatar)}.png?size=96`;
+    avatar.classList.add("visible");
+  }
   $("#signOutButton").classList.remove("hidden");
   let allowed = false;
   try { allowed = await isAdmin(); } catch (err) { console.error(err); }
