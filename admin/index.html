@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#05070d">
+  <title>Admin Panel | Shell Strike</title>
+  <style>
+    :root{--blue:#087bff;--ink:#05070d;--white:#f5f7fb;--muted:#9ba8bd;--line:rgba(255,255,255,.14)}
+    *{box-sizing:border-box}body{margin:0;background:var(--ink);color:var(--white);font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;min-height:100vh}
+    a{color:inherit;text-decoration:none}.nav{height:76px;padding:0 clamp(20px,5vw,64px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}.brand{font-size:20px;font-weight:1000;letter-spacing:-.06em}.brand span{color:var(--blue)}
+    .nav-right{display:flex;gap:16px;align-items:center;color:var(--muted);font-size:12px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:13px 17px;border:1px solid var(--blue);background:var(--blue);color:#fff;font-size:11px;font-weight:950;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}.btn.secondary{background:transparent;border-color:var(--line)}.btn:disabled{opacity:.5;cursor:not-allowed}
+    main{width:min(1200px,calc(100% - 36px));margin:44px auto 80px}.eyebrow{font:900 11px ui-monospace,monospace;letter-spacing:.2em;text-transform:uppercase;color:#7bbaff}h1{font-size:clamp(34px,6vw,60px);letter-spacing:-.065em;line-height:1;margin:12px 0 10px;text-transform:uppercase}.sub{color:var(--muted);line-height:1.7}
+    .login,.panel,.card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.01));padding:clamp(20px,3vw,30px)}.login{max-width:540px;margin:45px auto;text-align:center}.login p{color:var(--muted);line-height:1.8}.login .btn{width:100%;margin-top:14px}
+    .panel{margin-top:28px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}.panel h2{margin:0;font-size:23px;letter-spacing:-.04em;text-transform:uppercase}.pill{font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;padding:7px 10px;border:1px solid var(--line)}.pill.open{color:#72e5a3;border-color:rgba(114,229,163,.4)}.pill.closed{color:#ff9d9d;border-color:rgba(255,157,157,.4)}
+    .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:25px}.field{display:flex;flex-direction:column;gap:9px}.wide{grid-column:1/-1}label{font-size:11px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#cbd4e4}input,textarea,select{width:100%;padding:13px;background:#080c16;color:var(--white);border:1px solid var(--line);font:inherit}textarea{min-height:100px;resize:vertical;line-height:1.6}.toggle-row{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:17px 0;border-bottom:1px solid var(--line)}.toggle-copy strong{display:block}.toggle-copy span{display:block;color:var(--muted);font-size:12px;line-height:1.6;margin-top:5px}
+    .switch{position:relative;width:58px;height:32px;border:1px solid var(--line);background:#202534;border-radius:99px;cursor:pointer;flex:0 0 auto}.switch:after{content:"";position:absolute;width:24px;height:24px;left:3px;top:3px;border-radius:50%;background:#858b99;transition:.15s}.switch.on{background:rgba(34,197,94,.18);border-color:rgba(34,197,94,.5)}.switch.on:after{left:29px;background:#22c55e}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.status{margin-top:15px;color:#b8d8ff;font-size:13px;line-height:1.7}.status.error{color:#ff9d9d}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}.stat{border:1px solid var(--line);padding:17px}.stat strong{display:block;font-size:28px;letter-spacing:-.05em}.stat span{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
+    .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:22px 0}.filters select{width:auto;min-width:160px}.application{padding:20px 0;border-top:1px solid var(--line)}.app-top{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.application h3{margin:0 0 6px;font-size:17px}.meta{font-size:12px;color:var(--muted);line-height:1.7}.application p{white-space:pre-wrap;color:#d0d6e2;line-height:1.7;font-size:13px}.app-controls{display:grid;grid-template-columns:180px 1fr;gap:10px;margin-top:12px}.app-controls textarea{min-height:44px}.small-btn{padding:9px 12px;font-size:10px}.empty{color:var(--muted);padding:20px 0}.hidden{display:none!important}
+    @media(max-width:700px){.nav{height:66px}.nav-right #userLabel{display:none}.settings-grid,.stats{grid-template-columns:1fr}.wide{grid-column:auto}.app-controls{grid-template-columns:1fr}main{margin-top:32px}}
+  </style>
+</head>
+<body>
+  <header class="nav"><a class="brand" href="/">SHELL <span>STRIKE</span></a><div class="nav-right"><span id="userLabel"></span><a href="/" class="btn secondary">View site</a><button id="signOutButton" class="btn secondary hidden">Sign out</button></div></header>
+  <main>
+    <div class="eyebrow">Shell Strike / Control room</div>
+    <h1>Admin <span style="color:var(--blue)">panel.</span></h1>
+    <p class="sub">Manage staff recruitment and review incoming applications.</p>
+    <section id="loginPanel" class="login">
+      <div class="eyebrow">Restricted access</div><h2>Sign in with Discord</h2>
+      <p>Only Discord accounts explicitly authorized by the Shell Strike owner can access the admin dashboard.</p>
+      <button id="signInButton" class="btn">Continue with Discord ↗</button>
+      <div id="loginStatus" class="status" role="status" aria-live="polite"></div>
+    </section>
+    <section id="deniedPanel" class="login hidden">
+      <div class="eyebrow">Access denied</div><h2>This account isn't authorized.</h2>
+      <p>Your Discord login worked, but this account is not on the Shell Strike admin allowlist. Ask the owner to authorize your Supabase user UUID.</p>
+      <button id="deniedSignOut" class="btn secondary">Sign out</button>
+    </section>
+    <div id="dashboard" class="hidden">
+      <section class="panel">
+        <div class="panel-head"><h2>Staff application settings</h2><span id="statusPill" class="pill">Loading</span></div>
+        <div class="toggle-row"><div class="toggle-copy"><strong>Accepting applications</strong><span>When disabled, the public form is hidden and the database rejects new submissions.</span></div><button id="applicationToggle" class="switch" aria-label="Toggle applications" aria-pressed="false"></button></div>
+        <div class="settings-grid">
+          <div class="field wide"><label for="closedMessage">Closed applications message</label><textarea id="closedMessage" maxlength="500">Staff applications are currently closed. Check back later for updates.</textarea></div>
+          <div class="field"><label for="applicationLimit">Application limit</label><select id="applicationLimit"><option value="unlimited">Unlimited</option><option value="50">50 total applications</option><option value="100">100 total applications</option><option value="250">250 total applications</option></select><span class="meta">A cap counts all submissions, including reviewed applications.</span></div>
+        </div>
+        <div class="actions"><button id="saveSettings" class="btn">Save settings</button><button id="refreshButton" class="btn secondary">Refresh data</button></div>
+        <div id="settingsStatus" class="status" role="status" aria-live="polite"></div>
+      </section>
+      <section class="panel">
+        <div class="panel-head"><h2>Applications inbox</h2><span class="pill">Private</span></div>
+        <div class="stats"><div class="stat"><strong id="totalCount">0</strong><span>Total</span></div><div class="stat"><strong id="pendingCount">0</strong><span>Pending</span></div><div class="stat"><strong id="reviewedCount">0</strong><span>Reviewed</span></div></div>
+        <div class="filters"><label for="statusFilter">Filter</label><select id="statusFilter"><option value="all">All applications</option><option value="pending">Pending</option><option value="accepted">Accepted</option><option value="rejected">Rejected</option></select></div>
+        <div id="applicationsList"><p class="empty">Loading applications…</p></div>
+      </section>
+    </div>
+  </main>
+  <script type="module" src="./admin.js"></script>
+</body>
+</html>
