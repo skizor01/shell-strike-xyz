@@ -8,6 +8,8 @@ const $ = (selector) => document.querySelector(selector);
 let currentUser = null;
 let settings = null;
 let applications = [];
+const OWNER_USER_ID = "7dadb17c-ed5c-4198-b5a2-b6783d20404c";
+const isOwner = () => currentUser?.id === OWNER_USER_ID;
 
 function setStatus(selector, message, isError = false) {
   const el = $(selector);
@@ -97,8 +99,63 @@ async function loadApplications() {
   applications = data || [];
   renderApplications();
 }
+async function loadAdminUsers() {
+  const root = $("#adminUsersList");
+  const status = $("#adminAccessStatus");
+  root.innerHTML = '<p class="empty">Loading authorized admins…</p>';
+  status.textContent = "";
+  const { data, error } = await supabase.from("admin_users")
+    .select("user_id,created_at")
+    .order("created_at", { ascending: true });
+  if (error) {
+    root.innerHTML = '<p class="empty">Could not load the admin list.</p>';
+    setStatus("#adminAccessStatus", "Admin list failed to load. Check the admin_users SELECT grant and RLS policy.", true);
+    return;
+  }
+  const admins = data || [];
+  if (!admins.length) {
+    root.innerHTML = '<p class="empty">No authorized admins found.</p>';
+    return;
+  }
+  root.innerHTML = admins.map((admin) => {
+    const owner = admin.user_id === OWNER_USER_ID;
+    const self = admin.user_id === currentUser?.id;
+    const canRevoke = isOwner() && !owner;
+    return `
+      <article class="admin-row">
+        <div>
+          <div><strong>${owner ? "Shell Strike Owner" : "Authorized Admin"}${self ? " (you)" : ""}</strong></div>
+          <div class="admin-id">${escapeHtml(admin.user_id)}</div>
+          <div class="admin-date">Added ${admin.created_at ? new Date(admin.created_at).toLocaleString() : "date unavailable"}</div>
+        </div>
+        <div>${canRevoke ? `<button class="btn small-btn danger-btn revoke-admin" data-user-id="${escapeHtml(admin.user_id)}">Revoke access</button>` : `<span class="pill">${owner ? "Owner" : "Admin"}</span>`}</div>
+      </article>`;
+  }).join("");
+  root.querySelectorAll(".revoke-admin").forEach((button) => button.addEventListener("click", async () => {
+    const targetUserId = button.dataset.userId;
+    if (!isOwner() || targetUserId === OWNER_USER_ID) {
+      setStatus("#adminAccessStatus", "You are not permitted to revoke this account.", true);
+      return;
+    }
+    if (!window.confirm(`Revoke admin access for ${targetUserId}? This takes effect immediately.`)) return;
+    button.disabled = true;
+    button.textContent = "Revoking…";
+    const { error: revokeError } = await supabase.rpc("revoke_shell_strike_admin", {
+      p_target_user_id: targetUserId
+    });
+    if (revokeError) {
+      button.disabled = false;
+      button.textContent = "Revoke access";
+      setStatus("#adminAccessStatus", revokeError.message || "Could not revoke access.", true);
+      return;
+    }
+    setStatus("#adminAccessStatus", "Admin access revoked.");
+    await loadAdminUsers();
+  }));
+}
 async function loadDashboard() {
   await loadSettings();
+  await loadAdminUsers();
   await loadApplications();
 }
 async function routeAuth() {
@@ -198,6 +255,7 @@ $("#refreshButton").addEventListener("click", async () => {
   catch (err) { setStatus("#settingsStatus", "Refresh failed. Check your connection.", true); }
 });
 $("#statusFilter").addEventListener("change", renderApplications);
+$("#refreshAdminsButton").addEventListener("click", loadAdminUsers);
 
 supabase.auth.onAuthStateChange(() => {
   // Defer the async check so Supabase can finish updating its internal session state.
