@@ -18,10 +18,49 @@
     .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}.status{margin-top:15px;color:#b8d8ff;font-size:13px;line-height:1.7}.status.error{color:#ff9d9d}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px}.stat{border:1px solid var(--line);padding:17px}.stat strong{display:block;font-size:28px;letter-spacing:-.05em}.stat span{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.08em}
     .filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:22px 0}.filters select{width:auto;min-width:160px}.application{padding:20px 0;border-top:1px solid var(--line)}.app-top{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.application h3{margin:0 0 6px;font-size:17px}.meta{font-size:12px;color:var(--muted);line-height:1.7}.application p{white-space:pre-wrap;color:#d0d6e2;line-height:1.7;font-size:13px}.app-controls{display:grid;grid-template-columns:180px 1fr;gap:10px;margin-top:12px}.app-controls textarea{min-height:44px}.small-btn{padding:9px 12px;font-size:10px}.empty{color:var(--muted);padding:20px 0}.hidden{display:none!important}
     @media(max-width:700px){.nav{height:66px}.nav-right #userLabel{display:none}.settings-grid,.stats{grid-template-columns:1fr}.wide{grid-column:auto}.app-controls{grid-template-columns:1fr}main{margin-top:32px}}
+
+    /* Shell Strike main-site navigation and loader */
+    html{scroll-behavior:smooth;scrollbar-color:var(--blue) #080b13}
+    body{overflow-x:hidden}
+    body.ss-loading{overflow:hidden}
+    .nav{position:fixed;z-index:30;top:0;left:0;width:100%;height:76px;padding:0 clamp(20px,5vw,76px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid transparent;background:rgba(5,7,13,.78);backdrop-filter:blur(18px);border-color:var(--line)}
+    .brand{display:flex;align-items:center;width:154px;height:56px;flex:0 0 auto;letter-spacing:0}
+    .brand img{display:block;width:100%;height:100%;object-fit:contain;object-position:left center}
+    .nav-right{display:flex;gap:14px;align-items:center;color:var(--muted);font-size:12px}
+    .user-profile{display:flex;align-items:center;gap:10px;min-width:0}
+    .user-avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.24);background:#111827;display:none}
+    .user-avatar.visible{display:block}
+    #userLabel{max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:750;color:#c5ccda}
+    .btn{clip-path:polygon(0 0,calc(100% - 9px) 0,100% 9px,100% 100%,9px 100%,0 calc(100% - 9px));transition:transform .2s,background .2s}
+    .btn:hover{transform:translateY(-2px);background:#3190ff}
+    .btn.secondary{background:transparent;border-color:rgba(255,255,255,.25)}
+    main{padding-top:76px}
+    .site-footer{padding:26px clamp(22px,5vw,76px);border-top:1px solid var(--line);display:flex;justify-content:flex-end;align-items:center;color:#8f9ab0;font-size:11px}
+    .site-footer a{text-transform:uppercase;letter-spacing:.1em;font-weight:800;transition:color .2s}
+    .site-footer a:hover{color:#fff}
+    .ss-loader{position:fixed;inset:0;z-index:9999;background:#05070d;display:grid;place-items:center;overflow:hidden;visibility:visible;opacity:1;transition:opacity .55s ease,visibility .55s ease}
+    .ss-loader.is-done{opacity:0;visibility:hidden;pointer-events:none}
+    .ss-loader:before{content:"";position:absolute;inset:0;opacity:.2;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:72px 72px}
+    .ss-loader-center{position:relative;text-align:center;width:100%;padding:24px}
+    .ss-loader-logo{display:flex;align-items:baseline;justify-content:center;gap:.15em;font-family:Impact,"Arial Narrow",sans-serif;font-size:clamp(58px,12vw,150px);font-weight:1000;letter-spacing:-.045em;white-space:nowrap}
+    .ss-loader-shell{color:#f5f7fb}.ss-loader-strike{color:#087bff}
+    .ss-loader-tag{font:800 9px ui-monospace,monospace;letter-spacing:.32em;color:#8495ad;margin-top:22px}
+    .ss-loader-footer{position:absolute;left:24px;right:24px;bottom:25px;display:flex;justify-content:space-between;font:700 9px ui-monospace,monospace;letter-spacing:.13em;color:#63718a}
+    .ss-loader-progress{position:absolute;left:0;bottom:0;width:100%;height:3px;background:rgba(255,255,255,.08)}
+    .ss-loader-progress i{display:block;width:0;height:100%;background:#087bff;box-shadow:0 0 18px rgba(8,123,255,.65);animation:ss-simple-progress 2.6s cubic-bezier(.65,0,.35,1) forwards}
+    @keyframes ss-simple-progress{to{width:100%}}
+    @media(max-width:700px){.nav{height:66px}.brand{width:118px;height:48px}.nav-right{gap:8px}.nav-right #userLabel{display:none}.user-avatar{width:32px;height:32px}.nav-right .btn{padding:11px 12px;font-size:10px}.site-footer{justify-content:center}.ss-loader-footer{left:12px;right:12px;bottom:18px;font-size:7px;letter-spacing:.06em}.ss-loader-logo{font-size:clamp(45px,11vw,75px)}main{padding-top:66px}}
+    @media(prefers-reduced-motion:reduce){.ss-loader-progress i{animation-duration:.4s}.btn{transition:none}}
+
   </style>
 </head>
-<body>
-  <header class="nav"><a class="brand" href="/">SHELL <span>STRIKE</span></a><div class="nav-right"><span id="userLabel"></span><a href="/" class="btn secondary">View site</a><button id="signOutButton" class="btn secondary hidden">Sign out</button></div></header>
+<body class="ss-loading">
+  <div class="ss-loader" id="ssLoader" aria-label="Loading Shell Strike">
+    <div class="ss-loader-center"><div class="ss-loader-logo"><span class="ss-loader-shell">SHELL</span><span class="ss-loader-strike">STRIKE</span></div><div class="ss-loader-tag">LOCK IN. WIN BIG.</div></div>
+    <div class="ss-loader-footer"><span>SHELL STRIKE // ARENA SYSTEM</span><span>INITIALIZING</span></div>
+    <div class="ss-loader-progress"><i id="ssLoaderProgress"></i></div>
+  </div>
+  <header class="nav"><a class="brand" href="/" aria-label="Shell Strike home"><img src="/assets/logo.png" alt="Shell Strike logo"></a><div class="nav-right"><div class="user-profile"><img id="userAvatar" class="user-avatar" alt="Signed-in Discord avatar" referrerpolicy="no-referrer"><span id="userLabel"></span></div><a href="/" class="btn secondary">View site</a><button id="signOutButton" class="btn secondary hidden">Sign out</button></div></header>
   <main>
     <div class="eyebrow">Shell Strike / Control room</div>
     <h1>Admin <span style="color:var(--blue)">panel.</span></h1>
@@ -56,6 +95,24 @@
       </section>
     </div>
   </main>
+  <footer class="site-footer"><a href="/">Home</a></footer>
+  <script>
+    (() => {
+      const loader = document.getElementById('ssLoader');
+      const progress = document.getElementById('ssLoaderProgress');
+      let started = false;
+      function dismissLoader(){
+        if(!loader || started) return;
+        started = true;
+        const duration = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 400 : 2600;
+        if(progress){ progress.style.animation='none'; progress.style.width='0'; void progress.offsetWidth; progress.style.transition=`width ${duration}ms cubic-bezier(.65,0,.35,1)`; requestAnimationFrame(()=>progress.style.width='100%'); }
+        window.setTimeout(()=>{loader.classList.add('is-done');document.body.classList.remove('ss-loading');},duration+80);
+      }
+      if(document.readyState==='complete') dismissLoader(); else window.addEventListener('load',dismissLoader,{once:true});
+      window.setTimeout(dismissLoader,4500);
+    })();
+  </script>
   <script type="module" src="./admin.js"></script>
 </body>
 </html>
+
