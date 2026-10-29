@@ -104,12 +104,11 @@ async function loadAdminUsers() {
   const status = $("#adminAccessStatus");
   root.innerHTML = '<p class="empty">Loading authorized admins…</p>';
   status.textContent = "";
-  const { data, error } = await supabase.from("admin_users")
-    .select("user_id,created_at")
-    .order("created_at", { ascending: true });
+  const { data, error } = await supabase.rpc("get_shell_strike_admin_directory");
   if (error) {
-    root.innerHTML = '<p class="empty">Could not load the admin list.</p>';
-    setStatus("#adminAccessStatus", "Admin list failed to load. Check the admin_users SELECT grant and RLS policy.", true);
+    root.innerHTML = '<p class="empty">Could not load the admin directory.</p>';
+    setStatus("#adminAccessStatus", "Admin directory failed to load. Run the admin directory SQL in Supabase, then refresh.", true);
+    console.error("Admin directory error:", error);
     return;
   }
   const admins = data || [];
@@ -121,12 +120,25 @@ async function loadAdminUsers() {
     const owner = admin.user_id === OWNER_USER_ID;
     const self = admin.user_id === currentUser?.id;
     const canRevoke = isOwner() && !owner;
+    const displayName = admin.discord_username || "Discord user";
+    let avatarUrl = admin.discord_avatar_url || "";
+    if (!avatarUrl && admin.discord_id) {
+      const avatarHash = admin.discord_avatar_hash;
+      if (avatarHash) avatarUrl = `https://cdn.discordapp.com/avatars/${encodeURIComponent(admin.discord_id)}/${encodeURIComponent(avatarHash)}.png?size=96`;
+    }
+    const safeAvatar = avatarUrl && /^https:\/\/(cdn\.discordapp\.com|media\.discordapp\.net)\//i.test(avatarUrl) ? avatarUrl : "";
+    const initial = escapeHtml((displayName.trim()[0] || "D").toUpperCase());
     return `
       <article class="admin-row">
-        <div>
-          <div><strong>${owner ? "Shell Strike Owner" : "Authorized Admin"}${self ? " (you)" : ""}</strong></div>
-          <div class="admin-id">${escapeHtml(admin.user_id)}</div>
-          <div class="admin-date">Added ${admin.created_at ? new Date(admin.created_at).toLocaleString() : "date unavailable"}</div>
+        <div class="admin-identity">
+          ${safeAvatar
+            ? `<img class="admin-discord-avatar" src="${escapeHtml(safeAvatar)}" alt="" referrerpolicy="no-referrer" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'"><span class="admin-avatar-fallback" style="display:none">${initial}</span>`
+            : `<span class="admin-avatar-fallback">${initial}</span>`}
+          <div class="admin-details">
+            <div class="admin-display-name"><strong>${escapeHtml(displayName)}${self ? " (you)" : ""}</strong>${owner ? '<span class="pill owner-pill">Owner</span>' : ""}</div>
+            <div class="admin-id">${escapeHtml(admin.user_id)}</div>
+            <div class="admin-date">Added ${admin.created_at ? new Date(admin.created_at).toLocaleString() : "date unavailable"}</div>
+          </div>
         </div>
         <div>${canRevoke ? `<button class="btn small-btn danger-btn revoke-admin" data-user-id="${escapeHtml(admin.user_id)}">Revoke access</button>` : `<span class="pill">${owner ? "Owner" : "Admin"}</span>`}</div>
       </article>`;
