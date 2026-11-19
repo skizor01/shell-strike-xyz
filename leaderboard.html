@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#05070d">
+  <meta name="description" content="Live Shell Strike Season 4 ELO leaderboard.">
+  <title>Leaderboard | Shell Strike</title>
+  <link rel="icon" type="image/png" href="assets/strike-blue.png">
+  <style>
+    :root{--blue:#087bff;--blue2:#3156ff;--ink:#05070d;--white:#f5f7fb;--muted:#9ba8bd;--line:rgba(255,255,255,.14);--panel:#080c16}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;scrollbar-color:var(--blue) #080b13}
+    body{margin:0;background:var(--ink);color:var(--white);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+    a{color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    ::selection{background:var(--blue);color:#fff}
+    .noise{position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+    .nav{position:sticky;top:0;z-index:30;height:76px;padding:0 clamp(20px,5vw,76px);display:flex;align-items:center;justify-content:space-between;gap:20px;background:rgba(5,7,13,.86);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+    .nav-brand{display:flex;align-items:center;width:154px;height:56px;flex:0 0 auto}
+    .nav-brand img{display:block;width:100%;height:100%;object-fit:contain}
+    .nav-links{display:flex;align-items:center;gap:clamp(12px,2vw,28px);font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.09em;color:#c5ccda}
+    .nav-links a{transition:color .2s}.nav-links a:hover,.nav-links a[aria-current=page]{color:#fff}
+    .nav-cta,.button{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 18px;background:var(--blue);color:#fff;font-weight:900;font-size:10px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--blue);clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));transition:transform .2s,background .2s}
+    .nav-cta:hover,.button:hover{transform:translateY(-2px);background:#3190ff}
+    .menu-toggle{display:none;background:none;border:0;color:white;font-size:25px}
+    main{min-height:calc(100vh - 160px);padding:clamp(64px,8vw,112px) clamp(20px,6vw,88px) 100px;background:radial-gradient(ellipse at 50% 0%,rgba(8,123,255,.13),transparent 48%),#05070d}
+    .wrap{max-width:1450px;margin:auto}
+    .hero{position:relative;padding:20px 0 42px;overflow:hidden}
+    .hero:after{content:"SS / S04";position:absolute;right:-10px;bottom:-54px;font-size:clamp(100px,20vw,260px);font-weight:1000;letter-spacing:-.09em;color:rgba(255,255,255,.025);white-space:nowrap;pointer-events:none}
+    .kicker,.section-kicker{color:var(--blue);font-size:10px;letter-spacing:.2em;text-transform:uppercase;font-weight:950}
+    h1,h2,h3,p{margin-top:0}
+    h1{position:relative;z-index:1;font-size:clamp(52px,9vw,112px);line-height:.84;letter-spacing:-.08em;text-transform:uppercase;margin:20px 0 24px;font-weight:1000}
+    .outline{color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.72)}
+    .hero-copy{position:relative;z-index:1;max-width:620px;color:var(--muted);font-size:14px;line-height:1.8;margin:0}
+    .hero-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
+    .pill{border:1px solid var(--line);padding:8px 11px;color:#c5ccda;font:800 10px ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;background:rgba(255,255,255,.025)}
+    .pill strong{color:var(--blue);font-weight:900}
+    .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#35d48a;box-shadow:0 0 12px rgba(53,212,138,.8);margin-right:7px}
+    .overview{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0 34px}
+    .stat-card{min-width:0;border:1px solid var(--line);background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.008));padding:20px 21px;position:relative;overflow:hidden}
+    .stat-card:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,var(--blue),transparent 75%)}
+    .stat-label{color:#8291a8;font:800 9px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase}
+    .stat-value{font-size:clamp(25px,3vw,36px);font-weight:950;letter-spacing:-.06em;margin-top:10px;font-variant-numeric:tabular-nums}
+    .stat-note{color:#75839a;font-size:10px;margin-top:4px}
+    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 14px;flex-wrap:wrap}
+    .toolbar-left{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+    .season-label{color:#b8d8ff;font:900 11px ui-monospace,monospace;letter-spacing:.12em;text-transform:uppercase;border:1px solid rgba(8,123,255,.35);background:rgba(8,123,255,.08);padding:11px 13px}
+    .search-wrap{position:relative;min-width:min(320px,100%)}
+    .search-wrap input{width:100%;height:42px;padding:0 14px 0 38px;background:#080c16;border:1px solid var(--line);color:var(--white);outline:none;font-size:12px}
+    .search-wrap input:focus{border-color:rgba(8,123,255,.8)}
+    .search-wrap:before{content:"⌕";position:absolute;left:13px;top:7px;color:#8190a8;font-size:22px}
+    .refresh-info{color:#8291a8;font:700 10px ui-monospace,monospace;letter-spacing:.07em}
+    .table-shell{border:1px solid var(--line);background:rgba(255,255,255,.018);overflow:hidden}
+    .table-head,.player-row{display:grid;grid-template-columns:76px minmax(180px,1fr) 120px 100px 100px 110px;align-items:center;gap:12px;padding:15px 20px}
+    .table-head{color:#7f8da4;background:rgba(255,255,255,.035);border-bottom:1px solid var(--line);font:800 9px ui-monospace,monospace;letter-spacing:.13em;text-transform:uppercase}
+    .table-head span:nth-child(n+3),.cell-num{text-align:right}
+    .player-row{min-height:58px;border-bottom:1px solid rgba(255,255,255,.07);transition:background .2s}
+    .player-row:last-child{border-bottom:0}.player-row:hover{background:rgba(8,123,255,.07)}
+    .rank{color:#8291a8;font:800 12px ui-monospace,monospace}
+    .rank.top-one{color:#f0c66a}.rank.top-two{color:#c5d0e0}.rank.top-three{color:#d89b70}
+    .player-id{min-width:0;overflow-wrap:anywhere;font-size:12px;font-weight:800}
+    .player-sub{display:block;color:#71819a;font:700 9px ui-monospace,monospace;margin-top:4px;letter-spacing:.06em}
+    .cell-num{font:800 12px ui-monospace,monospace;font-variant-numeric:tabular-nums;color:#dce5f3}
+    .elo{color:#fff;font-weight:950}.elo:after{content:" ELO";color:#77869c;font-size:9px;letter-spacing:.08em}
+    .table-footer{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 18px;border-top:1px solid var(--line);color:#75839a;font:700 9px ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase}
+    .pager{display:flex;gap:7px}
+    .pager button{background:#0a101c;border:1px solid var(--line);color:#dce5f3;padding:8px 11px;font:800 10px ui-monospace,monospace}
+    .pager button:disabled{opacity:.35;cursor:not-allowed}.pager button:not(:disabled):hover{border-color:var(--blue)}
+    .state{padding:44px 20px;text-align:center;color:#9ba8bd;font-size:13px;line-height:1.7}
+    .state strong{display:block;color:#f5f7fb;font-size:15px;margin-bottom:7px}
+    .error-state button{margin-top:14px;background:var(--blue);border:0;color:white;padding:11px 16px;font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+    .footer{padding:28px clamp(22px,5vw,76px);border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:20px;color:#8f9ab0;font-size:11px}
+    .footer-brand{display:inline-flex;align-items:center;flex:0 0 auto;width:154px;height:48px}.footer-brand img{display:block;width:100%;height:100%;object-fit:contain;object-position:left center}
+    .footer-links{display:flex;gap:20px;text-transform:uppercase;letter-spacing:.1em;font-weight:800}.footer-links a:hover{color:white}
+    @media(max-width:900px){.overview{grid-template-columns:repeat(2,minmax(0,1fr))}.table-head,.player-row{grid-template-columns:54px minmax(130px,1fr) 95px 75px 75px}.table-head span:nth-child(6),.player-row .cell-games{display:none}}
+    @media(max-width:760px){.nav{height:66px}.nav-links{display:none;position:absolute;top:65px;left:0;right:0;padding:24px;background:rgba(5,7,13,.97);flex-direction:column;align-items:flex-start;border-bottom:1px solid var(--line)}.nav-links.open{display:flex}.nav-cta{padding:11px 13px;font-size:9px}.menu-toggle{display:block}main{padding:54px 16px 70px}.hero{padding-top:10px}.overview{gap:8px}.stat-card{padding:15px}.stat-value{font-size:27px}.toolbar{align-items:stretch}.toolbar-left{width:100%}.search-wrap{min-width:0;flex:1}.refresh-info{width:100%}.table-head,.player-row{grid-template-columns:42px minmax(105px,1fr) 78px 58px 58px;gap:7px;padding:13px 10px}.table-head{font-size:8px}.player-row{min-height:54px}.player-id{font-size:10px}.cell-num{font-size:10px}.table-head span:nth-child(6),.player-row .cell-games{display:none}.table-footer{align-items:flex-start;flex-direction:column}.footer{flex-direction:column;align-items:flex-start}.footer-brand{width:132px;height:42px}.footer-links{flex-wrap:wrap}}
+    @media(max-width:390px){.table-head,.player-row{grid-template-columns:34px minmax(90px,1fr) 68px 48px 48px;padding-left:7px;padding-right:7px}.cell-num{font-size:9px}.table-head{letter-spacing:.06em}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <header class="nav">
+    <a class="nav-brand" href="/" aria-label="Shell Strike home"><img src="assets/logo.png" alt="Shell Strike"></a>
+    <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+      <a href="/">Home</a><a href="/staff">Staff</a><a href="/seasons">Past seasons</a>
+      <a href="/leaderboard" aria-current="page">Leaderboard</a><a href="/apply">Staff application</a><a href="/tickets">Tickets / reports</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:14px">
+      <a class="nav-cta" href="https://discord.gg/shell-strike-ranked-1470482329075060831" target="_blank" rel="noopener noreferrer">Enter the arena ↗</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="hero">
+        <div class="kicker">Shell Strike / Competitive rankings</div>
+        <h1>THE<br><span class="outline">LEADERBOARD.</span></h1>
+        <p class="hero-copy">Every match moves the rankings. Track the players leading Season 04, ranked by their official ELO.</p>
+        <div class="hero-meta">
+          <span class="pill"><span class="live-dot"></span>Live data</span>
+          <span class="pill"><strong>SEASON 04</strong> / CURRENT</span>
+          <span class="pill">RANKED BY ELO</span>
+        </div>
+      </section>
+
+      <section class="overview" aria-label="Leaderboard overview">
+        <article class="stat-card"><div class="stat-label">Registered players</div><div class="stat-value" id="totalPlayers">—</div><div class="stat-note">Season 04 records</div></article>
+        <article class="stat-card"><div class="stat-label">Players with games</div><div class="stat-value" id="activePlayers">—</div><div class="stat-note">At least one recorded game</div></article>
+        <article class="stat-card"><div class="stat-label">Games recorded</div><div class="stat-value" id="totalGames">—</div><div class="stat-note">Season 04 match records</div></article>
+        <article class="stat-card"><div class="stat-label">Last data refresh</div><div class="stat-value" id="lastUpdated" style="font-size:clamp(18px,2.4vw,27px)">Waiting</div><div class="stat-note" id="connectionState">Connecting to rankings API</div></article>
+      </section>
+
+      <section aria-label="Season 4 player rankings">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <span class="season-label">Season 04 / ELO rankings</span>
+            <label class="search-wrap"><input id="searchInput" type="search" placeholder="Search player ID..." autocomplete="off" aria-label="Search player ID"></label>
+          </div>
+          <div class="refresh-info" id="refreshInfo">AUTO-REFRESH · EVERY 15 SECONDS</div>
+        </div>
+        <div class="table-shell">
+          <div class="table-head"><span>Rank</span><span>Discord player ID</span><span>ELO</span><span>Wins</span><span>Losses</span><span>Games</span></div>
+          <div id="leaderboardRows"><div class="state"><strong>Loading Season 04 rankings</strong>Connecting to the Shell Strike database…</div></div>
+          <div class="table-footer">
+            <span id="resultCount">Awaiting leaderboard data</span>
+            <div class="pager"><button id="prevPage" type="button" disabled>← PREV</button><button id="nextPage" type="button" disabled>NEXT →</button></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <a class="footer-brand" href="/" aria-label="Shell Strike home"><img src="assets/logo.png" alt="Shell Strike logo" loading="lazy"></a>
+    <span>Built and managed by skizor04. © <span id="year"></span> Shell Strike.</span>
+    <div class="footer-links"><a href="/">Home</a><a href="https://discord.gg/shell-strike-ranked-1470482329075060831">Discord ↗</a></div>
+  </footer>
+
+  <script>
+    (() => {
+      // Set this to the public URL of the Python API after deploying it.
+      const API_URL = "https://YOUR-RAILWAY-APP.up.railway.app/api/leaderboard";
+      const REFRESH_MS = 15000;
+      const PAGE_SIZE = 25;
+
+      const rowsEl = document.getElementById("leaderboardRows");
+      const searchEl = document.getElementById("searchInput");
+      const prevBtn = document.getElementById("prevPage");
+      const nextBtn = document.getElementById("nextPage");
+      const number = new Intl.NumberFormat("en-US");
+      let allPlayers = [];
+      let page = 0;
+      let lastPayload = null;
+      let loading = false;
+
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      const toggle = document.getElementById("menuToggle");
+      const links = document.getElementById("navLinks");
+      toggle.addEventListener("click", () => {
+        const open = links.classList.toggle("open");
+        toggle.textContent = open ? "×" : "☰";
+        toggle.setAttribute("aria-expanded", String(open));
+      });
+      links.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+        links.classList.remove("open");
+        toggle.textContent = "☰";
+        toggle.setAttribute("aria-expanded", "false");
+      }));
+
+      function showState(title, message, isError = false) {
+        rowsEl.innerHTML = "";
+        const state = document.createElement("div");
+        state.className = "state" + (isError ? " error-state" : "");
+        const strong = document.createElement("strong");
+        strong.textContent = title;
+        const copy = document.createElement("div");
+        copy.textContent = message;
+        state.append(strong, copy);
+        if (isError) {
+          const retry = document.createElement("button");
+          retry.textContent = "Try again";
+          retry.addEventListener("click", loadLeaderboard);
+          state.append(retry);
+        }
+        rowsEl.append(state);
+      }
+
+      function render() {
+        const query = searchEl.value.trim().toLowerCase();
+        const filtered = allPlayers.filter(p => String(p.playerId).toLowerCase().includes(query));
+        const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+        page = Math.min(page, pages - 1);
+        const start = page * PAGE_SIZE;
+        const visible = filtered.slice(start, start + PAGE_SIZE);
+
+        rowsEl.innerHTML = "";
+        if (!visible.length) {
+          showState("No players found", "Try another Discord user ID.");
+        } else {
+          visible.forEach(player => {
+            const row = document.createElement("div");
+            row.className = "player-row";
+            const rank = document.createElement("span");
+            rank.className = "rank" + (player.rank === 1 ? " top-one" : player.rank === 2 ? " top-two" : player.rank === 3 ? " top-three" : "");
+            rank.textContent = "#" + String(player.rank).padStart(2, "0");
+            const identity = document.createElement("span");
+            identity.className = "player-id";
+            identity.textContent = player.playerId;
+            const sub = document.createElement("span");
+            sub.className = "player-sub";
+            sub.textContent = "DISCORD USER ID";
+            identity.append(sub);
+            const elo = makeCell(player.elo, "cell-num elo");
+            const wins = makeCell(player.wins, "cell-num");
+            const losses = makeCell(player.losses, "cell-num");
+            const games = makeCell(player.gamesPlayed, "cell-num cell-games");
+            row.append(rank, identity, elo, wins, losses, games);
+            rowsEl.append(row);
+          });
+        }
+        document.getElementById("resultCount").textContent =
+          `SHOWING ${filtered.length ? start + 1 : 0}–${Math.min(start + PAGE_SIZE, filtered.length)} OF ${number.format(filtered.length)} MATCHING PLAYERS`;
+        prevBtn.disabled = page <= 0;
+        nextBtn.disabled = page >= pages - 1;
+      }
+
+      function makeCell(value, className) {
+        const el = document.createElement("span");
+        el.className = className;
+        el.textContent = number.format(Number(value) || 0);
+        return el;
+      }
+
+      async function loadLeaderboard() {
+        if (loading) return;
+        if (API_URL.includes("YOUR-RAILWAY-APP")) {
+          showState("API not configured", "Deploy the Python API, then replace API_URL in this page with your Railway endpoint.", true);
+          document.getElementById("connectionState").textContent = "API URL required";
+          return;
+        }
+        loading = true;
+        try {
+          const response = await fetch(API_URL, { cache: "no-store" });
+          if (!response.ok) throw new Error(`API returned HTTP ${response.status}`);
+          const payload = await response.json();
+          if (!Array.isArray(payload.players)) throw new Error("Unexpected API response format");
+          allPlayers = payload.players;
+          lastPayload = payload;
+          document.getElementById("totalPlayers").textContent = number.format(payload.totalPlayers ?? allPlayers.length);
+          document.getElementById("activePlayers").textContent = number.format(allPlayers.filter(p => Number(p.gamesPlayed) > 0).length);
+          document.getElementById("totalGames").textContent = number.format(payload.totalGames ?? 0);
+          document.getElementById("lastUpdated").textContent = new Date(payload.updatedAt || Date.now()).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"});
+          document.getElementById("connectionState").textContent = "Connected · Season 04";
+          document.getElementById("refreshInfo").textContent = "AUTO-REFRESH · EVERY 15 SECONDS";
+          render();
+        } catch (error) {
+          console.error("[LEADERBOARD]", error);
+          if (!lastPayload) showState("Unable to load rankings", error.message + ". Check the API URL and CORS settings.", true);
+          document.getElementById("connectionState").textContent = "Connection issue";
+        } finally {
+          loading = false;
+        }
+      }
+
+      searchEl.addEventListener("input", () => { page = 0; render(); });
+      prevBtn.addEventListener("click", () => { page--; render(); });
+      nextBtn.addEventListener("click", () => { page++; render(); });
+
+      loadLeaderboard();
+      window.setInterval(loadLeaderboard, REFRESH_MS);
+    })();
+  </script>
+</body>
+</html>
