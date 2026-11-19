@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timezone
+import json
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,6 +13,23 @@ if not MONGO_URI:
 
 SERVER_ID = 1470482329075060831
 SEASON_ID = "4"
+METADATA_PATH = os.environ.get("METADATA_PATH", "leaderboard_metadata.json")
+
+
+def load_discord_metadata():
+    """Load the separately maintained Discord profile export."""
+    try:
+        with open(METADATA_PATH, "r", encoding="utf-8") as file:
+            records = json.load(file)
+        if not isinstance(records, list):
+            return {}
+        return {
+            str(record.get("playerId") or record.get("discord_id")): record
+            for record in records
+            if isinstance(record, dict) and (record.get("playerId") or record.get("discord_id"))
+        }
+    except (OSError, json.JSONDecodeError):
+        return {}
 
 client = MongoClient(
     MONGO_URI,
@@ -71,12 +89,19 @@ def get_leaderboard():
         raise HTTPException(status_code=404, detail="Season 4 data not found")
 
     players_data = season.get("players") or {}
+    discord_metadata = load_discord_metadata()
     players = []
 
     for player_id, stats in players_data.items():
         stats = stats or {}
+        profile = discord_metadata.get(str(player_id), {})
         players.append({
             "playerId": str(player_id),
+            "username": profile.get("username") or None,
+            "globalName": profile.get("global_name") or None,
+            "displayName": profile.get("display_name") or profile.get("global_name") or profile.get("username") or str(player_id),
+            "avatarUrl": profile.get("avatar_url") or None,
+            "isBot": bool(profile.get("is_bot", False)),
             "elo": int(stats.get("elo") or 0),
             "wins": int(stats.get("wins") or 0),
             "losses": int(stats.get("losses") or 0),

@@ -60,7 +60,11 @@
     .player-row:last-child{border-bottom:0}.player-row:hover{background:rgba(8,123,255,.07)}
     .rank{color:#8291a8;font:800 12px ui-monospace,monospace}
     .rank.top-one{color:#f0c66a}.rank.top-two{color:#c5d0e0}.rank.top-three{color:#d89b70}
-    .player-id{min-width:0;overflow-wrap:anywhere;font-size:12px;font-weight:800}
+    .identity-wrap{display:flex;align-items:center;gap:12px;min-width:0}
+    .avatar{width:36px;height:36px;flex:0 0 36px;border-radius:50%;object-fit:cover;background:#111a2b;border:1px solid rgba(255,255,255,.14)}
+    .identity-text{min-width:0}
+    .player-id{min-width:0;overflow-wrap:anywhere;font-size:12px;font-weight:850}
+    .player-name{display:block;color:#f5f7fb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .player-sub{display:block;color:#71819a;font:700 9px ui-monospace,monospace;margin-top:4px;letter-spacing:.06em}
     .cell-num{font:800 12px ui-monospace,monospace;font-variant-numeric:tabular-nums;color:#dce5f3}
     .elo{color:#fff;font-weight:950}.elo:after{content:" ELO";color:#77869c;font-size:9px;letter-spacing:.08em}
@@ -190,9 +194,15 @@
         rowsEl.append(state);
       }
 
+      function fallbackAvatar() {
+        return "data:image/svg+xml," + encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" rx="20" fill="#111a2b"/><text x="20" y="25" text-anchor="middle" font-size="17" fill="#9bbfff" font-family="Arial">?</text></svg>'
+        );
+      }
+
       function render() {
         const query = searchEl.value.trim().toLowerCase();
-        const filtered = allPlayers.filter(p => String(p.playerId).toLowerCase().includes(query));
+        const filtered = allPlayers.filter(p => [p.playerId, p.displayName, p.globalName, p.username].some(value => String(value || "").toLowerCase().includes(query)));
         const pages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
         page = Math.min(page, pages - 1);
         const start = page * PAGE_SIZE;
@@ -208,13 +218,29 @@
             const rank = document.createElement("span");
             rank.className = "rank" + (player.rank === 1 ? " top-one" : player.rank === 2 ? " top-two" : player.rank === 3 ? " top-three" : "");
             rank.textContent = "#" + String(player.rank).padStart(2, "0");
-            const identity = document.createElement("span");
-            identity.className = "player-id";
-            identity.textContent = player.playerId;
+            const identity = document.createElement("div");
+            identity.className = "identity-wrap";
+
+            const avatar = document.createElement("img");
+            avatar.className = "avatar";
+            avatar.alt = "";
+            avatar.loading = "lazy";
+            avatar.referrerPolicy = "no-referrer";
+            avatar.src = player.avatarUrl || fallbackAvatar();
+            avatar.onerror = () => { avatar.onerror = null; avatar.src = fallbackAvatar(); };
+
+            const identityText = document.createElement("span");
+            identityText.className = "identity-text";
+            const name = document.createElement("span");
+            name.className = "player-name";
+            name.textContent = player.globalName || player.username || player.displayName || player.playerId;
             const sub = document.createElement("span");
             sub.className = "player-sub";
-            sub.textContent = "DISCORD USER ID";
-            identity.append(sub);
+            sub.textContent = player.username
+              ? "@" + player.username + " · " + player.playerId
+              : "DISCORD ID · " + player.playerId;
+            identityText.append(name, sub);
+            identity.append(avatar, identityText);
             const elo = makeCell(player.elo, "cell-num elo");
             const wins = makeCell(player.wins, "cell-num");
             const losses = makeCell(player.losses, "cell-num");
