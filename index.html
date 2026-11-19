@@ -141,7 +141,6 @@
                 color: white;
                 font-size: 25px;
             }
-            /* The hero is deliberately pinned while scroll progress drives the reveal. */
             .hero-scroll {
                 height: 260vh;
                 position: relative;
@@ -690,8 +689,6 @@
                     transform: none !important;
                 }
             }
-
-            /* Restored simple loader from Smooth Edition */
             body.ss-loading {
                 overflow: hidden;
             }
@@ -805,8 +802,6 @@
                     animation-duration: 0.4s;
                 }
             }
-
-            /* HERO COMPOSITION FIX: keep both marks centered and copy readable */
             .hero-content {
                 display: block;
                 text-align: center;
@@ -906,8 +901,6 @@
                     margin: 9px 0;
                 }
             }
-
-            /* Use the supplied full Shell Strike logo in the navigation corner */
             .nav-brand-image {
                 display: flex;
                 align-items: center;
@@ -931,8 +924,6 @@
                     height: 48px;
                 }
             }
-
-            /* HOW IT WORKS: queue flow, match setup, ELO and a real scoreboard example */
             .how-section { background: #05070d; }
             .how-head { display:flex; justify-content:space-between; align-items:flex-end; gap:40px; margin-bottom:48px; }
             .how-head p { max-width:360px; color:var(--muted); font-size:14px; line-height:1.8; margin:0 0 5px; }
@@ -969,7 +960,6 @@
             @media(max-width:900px) { .how-grid { grid-template-columns:1fr 1fr; } .how-card:last-child { grid-column:1/-1; } .elo-strip { grid-template-columns:1fr; } .prize-side { border-left:0; border-top:1px solid var(--line); padding:22px 0 0; } }
             @media(max-width:760px) { .how-head,.scoreboard-head { display:block; } .how-head p,.scoreboard-head p { margin-top:20px; } .how-grid { grid-template-columns:1fr; } .how-card:last-child { grid-column:auto; } .how-card { min-height:245px; } .how-symbol { margin:22px 0 18px; } .elo-strip { padding:22px; } .scoreboard-frame { padding:4px; } .scoreboard-frame:before { top:9px; left:9px; font-size:7px; } .scoreboard-note { flex-direction:column; gap:6px; } }
 
-            /* Latest Shell Strike videos */
             .videos-section { background:#070a12; }
             .videos-head { display:flex; justify-content:space-between; align-items:flex-end; gap:36px; margin-bottom:38px; }
             .videos-head p { max-width:340px; margin:0 0 4px; color:var(--muted); font-size:14px; line-height:1.8; }
@@ -1135,7 +1125,6 @@
                     <p class="reveal delay-1">Catch the latest Shell Strike matches, highlights and moments from the community.</p>
                 </div>
                 <div class="videos-grid">
-                    <!-- Replace VIDEO_ID_1, VIDEO_ID_2 and VIDEO_ID_3 with the IDs from your YouTube video links. Example: youtube.com/watch?v=abc123 -> abc123 -->
                     <article class="video-card reveal">
                         <div class="video-frame"><iframe src="https://www.youtube-nocookie.com/embed/SCiL52wkfmI" title="Latest Shell Strike YouTube video 1" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
                         <div class="video-meta"><div class="video-label">Latest upload / 01</div><h3>Shell Strike Highlights 01</h3></div>
@@ -1173,7 +1162,6 @@
         </footer>
         <script>
             (() => {
-                // Loading screen dismissal: wait for page load, then run the 2.6s line and reveal.
                 const ssLoader = document.getElementById("ssLoader");
                 const ssProgress = document.getElementById("ssLoaderProgress");
                 let ssLoaderDismissStarted = false;
