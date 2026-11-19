@@ -111,8 +111,8 @@ def get_leaderboard():
             "bestWinStreak": int(stats.get("best_win_streak") or 0),
         })
 
-    # Official Shell Strike ranking metric: ELO.
-    # Wins are used only as a deterministic tie-breaker.
+
+    
     players.sort(key=lambda player: (player["elo"], player["wins"]), reverse=True)
 
     for index, player in enumerate(players, start=1):
