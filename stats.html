@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#05070d" />
-  <meta name="description" content="Browse historical Shell Strike King of the Court match statistics." />
+  <meta name="description" content="Browse historical Shell Strike KOTC match statistics." />
   <link rel="icon" type="image/png" href="assets/strike-blue.png" />
   <title>Match Stats — Shell Strike</title>
   <style>
@@ -164,7 +164,7 @@
   <script>
     (()=>{
       // The page expects a same-origin backend endpoint. Keep Discord credentials server-side.
-      const API_ENDPOINT='https://YOUR-RAILWAY-DOMAIN/api/match-stats';
+      const API_ENDPOINT='https://shell-strike-xyz-production.up.railway.app/api/match-stats';
       const loader=document.getElementById('ssLoader'),progress=document.getElementById('ssLoaderProgress');let dismissed=false;
       function dismissLoader(){if(!loader||dismissed)return;dismissed=true;const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;const duration=reduced?400:2600;if(progress){progress.style.animation='none';progress.style.width='0';void progress.offsetWidth;progress.style.transition=`width ${duration}ms cubic-bezier(.65,0,.35,1)`;requestAnimationFrame(()=>progress.style.width='100%')}setTimeout(()=>{loader.classList.add('is-done')},duration+80)}
       if(document.readyState==='complete')dismissLoader();else addEventListener('load',dismissLoader,{once:true});setTimeout(dismissLoader,4500);
