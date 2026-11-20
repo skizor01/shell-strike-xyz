@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#05070d" />
+  <meta name="description" content="Browse historical Shell Strike King of the Court match statistics." />
+  <link rel="icon" type="image/png" href="assets/strike-blue.png" />
+  <title>Match Stats — Shell Strike</title>
+  <style>
+    :root{--blue:#087bff;--blue2:#3156ff;--ink:#05070d;--white:#f5f7fb;--muted:#9ba8bd;--line:rgba(255,255,255,.14)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scrollbar-color:var(--blue) #080b13}
+    body{margin:0;background:var(--ink);color:var(--white);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}button,a{-webkit-tap-highlight-color:transparent}button,input,select{font:inherit}::selection{background:var(--blue);color:#fff}
+    .noise{position:fixed;inset:0;pointer-events:none;z-index:20;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
+    .nav{position:fixed;z-index:30;top:0;left:0;width:100%;height:76px;padding:0 clamp(20px,5vw,76px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid transparent;transition:background .3s,border-color .3s}
+    .nav.scrolled{background:rgba(5,7,13,.78);backdrop-filter:blur(18px);border-color:var(--line)}
+    .nav-brand{display:flex;align-items:center;flex:0 0 auto;width:154px;height:48px}.nav-brand img{display:block;width:100%;height:100%;object-fit:contain;object-position:left center}
+    .nav-links{display:flex;align-items:center;gap:clamp(18px,3vw,42px);font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.11em;color:#c5ccda}.nav-links a{transition:color .2s}.nav-links a:hover,.nav-links a[aria-current=page]{color:#fff}
+    .nav-actions{display:flex;align-items:center;gap:14px}.nav-cta,.button{display:inline-flex;align-items:center;justify-content:center;gap:12px;padding:14px 20px;background:var(--blue);color:#fff;font-weight:900;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--blue);clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));transition:transform .2s,background .2s;cursor:pointer}.nav-cta:hover,.button:hover{transform:translateY(-3px);background:#3190ff}.menu-toggle{display:none;background:none;border:0;color:white;font-size:25px;cursor:pointer}
+    .footer{padding:28px clamp(22px,5vw,76px);border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:20px;color:#8f9ab0;font-size:11px}.footer-brand{display:inline-flex;align-items:center;flex:0 0 auto;width:154px;height:48px}.footer-brand img{display:block;width:100%;height:100%;object-fit:contain;object-position:left center}.footer-links{display:flex;gap:20px;text-transform:uppercase;letter-spacing:.1em;font-weight:800}.footer-links a:hover{color:white}
+    .ss-loader {
+                position: fixed;
+                inset: 0;
+                z-index: 9999;
+                background: #05070d;
+                display: grid;
+                place-items: center;
+                overflow: hidden;
+                visibility: visible;
+                opacity: 1;
+                transition:
+                    opacity 0.55s ease,
+                    visibility 0.55s ease;
+            }
+            .ss-loader.is-done {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+            .ss-loader:before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                opacity: 0.2;
+                background-image: linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+                background-size: 72px 72px;
+            }
+            .ss-loader-center {
+                position: relative;
+                text-align: center;
+                width: 100%;
+                padding: 24px;
+            }
+            .ss-loader-logo {
+                display: flex;
+                align-items: baseline;
+                justify-content: center;
+                gap: 0.15em;
+                font-family: Impact, "Arial Narrow", sans-serif;
+                font-size: clamp(58px, 12vw, 150px);
+                font-weight: 1000;
+                letter-spacing: -0.045em;
+                white-space: nowrap;
+            }
+            .ss-loader-shell {
+                color: #f5f7fb;
+            }
+            .ss-loader-strike {
+                color: #087bff;
+            }
+            .ss-loader-tag {
+                font:
+                    800 9px ui-monospace,
+                    monospace;
+                letter-spacing: 0.32em;
+                color: #8495ad;
+                margin-top: 22px;
+            }
+            .ss-loader-footer {
+                position: absolute;
+                left: 24px;
+                right: 24px;
+                bottom: 25px;
+                display: flex;
+                justify-content: space-between;
+                font:
+                    700 9px ui-monospace,
+                    monospace;
+                letter-spacing: 0.13em;
+                color: #63718a;
+            }
+            .ss-loader-progress {
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                height: 3px;
+                background: rgba(255, 255, 255, 0.08);
+            }
+            .ss-loader-progress i {
+                display: block;
+                width: 0;
+                height: 100%;
+                background: #087bff;
+                box-shadow: 0 0 18px rgba(8, 123, 255, 0.65);
+                animation: ss-simple-progress 2.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+            }
+            @keyframes ss-simple-progress {
+                to {
+                    width: 100%;
+                }
+            }
+    main{min-height:calc(100vh - 105px);padding:76px clamp(22px,8vw,120px) 100px;background:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),radial-gradient(ellipse at 72% 0%,rgba(8,123,255,.12),transparent 54%);background-size:64px 64px,64px 64px,auto}
+    .page-heading{padding-top:76px;margin-bottom:54px;max-width:850px}.section-kicker{display:block;color:var(--blue);font:800 11px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.22em;text-transform:uppercase;margin-bottom:24px}.hero-title{margin:0;font-size:clamp(64px,10vw,132px);line-height:.82;letter-spacing:-.085em;font-weight:1000}.hero-title .solid{display:block}.hero-title .outline{display:block;color:transparent;-webkit-text-stroke:2px rgba(245,247,251,.72)}.intro-copy{max-width:600px;margin:30px 0 0;color:var(--muted);font-size:15px;line-height:1.8}
+    .archive-shell{max-width:1120px}.archive-topline{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:16px;color:#8f9ab0;font:10px ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase}.archive-topline strong{color:var(--blue);font-weight:800}.selector-panel{display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:end;padding:24px;background:rgba(10,15,27,.82);border:1px solid var(--line);position:relative}.selector-panel:before{content:"";position:absolute;left:0;top:0;width:70px;height:2px;background:var(--blue)}
+    .field label{display:block;margin-bottom:10px;color:#9ba8bd;font:800 10px ui-monospace,monospace;letter-spacing:.16em;text-transform:uppercase}.field select,.field input{width:100%;height:50px;padding:0 14px;color:var(--white);background:#080d18;border:1px solid rgba(255,255,255,.16);outline:none;border-radius:0}.field select:focus,.field input:focus{border-color:var(--blue)}.field select option{background:#080d18}.selector-panel .button{height:50px;white-space:nowrap}
+    .result-meta{display:flex;justify-content:space-between;gap:14px;align-items:center;margin:34px 0 14px}.result-title{margin:0;font-size:clamp(23px,3vw,34px);font-weight:950;letter-spacing:-.05em}.result-title span{color:var(--blue)}.result-state{color:#8190a8;font:10px ui-monospace,monospace;letter-spacing:.14em;text-transform:uppercase}
+    .viewer{min-height:360px;border:1px solid var(--line);background:rgba(7,11,20,.88);display:flex;align-items:center;justify-content:center;padding:clamp(18px,3vw,36px);position:relative;overflow:hidden}.viewer:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(8,123,255,.09),transparent 65%);pointer-events:none}.viewer-placeholder{position:relative;text-align:center;max-width:480px;padding:35px 10px}.placeholder-icon{width:64px;height:64px;margin:0 auto 22px;border:1px solid rgba(8,123,255,.5);display:grid;place-items:center;color:var(--blue);font-size:27px;transform:rotate(45deg)}.placeholder-icon span{transform:rotate(-45deg)}.viewer-placeholder h3{margin:0 0 10px;font-size:20px;font-weight:900;letter-spacing:-.04em}.viewer-placeholder p{margin:0;color:var(--muted);font-size:13px;line-height:1.7}.viewer img{position:relative;display:none;max-width:100%;height:auto;object-fit:contain}.viewer.has-image img{display:block}.viewer.has-image .viewer-placeholder{display:none}.viewer-error{color:#ff8b8b}.result-actions{display:flex;justify-content:flex-end;gap:12px;margin-top:14px}.result-actions a{display:none}.result-actions a.visible{display:inline-flex}.hint{margin:20px 0 0;color:#77849a;font-size:11px;line-height:1.7}.hint b{color:#c5ccda}
+    @media(max-width:900px){.nav-links{gap:16px;font-size:10px}.nav-brand{width:120px}.nav-cta{padding:11px 13px;font-size:10px}}
+    @media(max-width:760px){.nav{height:66px}.nav-brand{width:118px;height:48px}.nav-links{display:none;position:absolute;top:65px;left:0;right:0;padding:24px;background:rgba(5,7,13,.97);flex-direction:column;align-items:flex-start;border-bottom:1px solid var(--line)}.nav-links.open{display:flex}.nav-cta{padding:11px 13px;font-size:10px}.menu-toggle{display:block}main{padding-top:66px}.page-heading{padding-top:48px;margin-bottom:42px}.hero-title{font-size:clamp(58px,15vw,100px)}.hero-title .outline{-webkit-text-stroke-width:1px}.intro-copy{margin-top:24px;font-size:14px}.selector-panel{grid-template-columns:1fr 1fr}.selector-panel .button{grid-column:1/-1;width:100%}.archive-topline{font-size:9px}.result-meta{align-items:flex-start;flex-direction:column}.viewer{min-height:260px}.footer{flex-wrap:wrap}.footer-brand{width:120px}.footer>span{order:3;width:100%}}
+    @media(max-width:420px){.selector-panel{grid-template-columns:1fr}.selector-panel .button{grid-column:auto}.nav-cta{display:none}}
+  </style>
+</head>
+<body>
+  <div class="ss-loader" id="ssLoader" aria-label="Loading Shell Strike">
+              <div class="ss-loader-center">
+                  <div class="ss-loader-logo">
+                      <span class="ss-loader-shell">SHELL</span><span class="ss-loader-strike">STRIKE</span>
+                  </div>
+                  <div class="ss-loader-tag">LOCK IN. WIN BIG.</div>
+              </div>
+              <div class="ss-loader-footer"><span>SHELL STRIKE // ARENA SYSTEM</span><span>INITIALIZING</span></div>
+              <div class="ss-loader-progress"><i id="ssLoaderProgress"></i></div>
+          </div>
+            <div class="noise"></div>
+  <header class="nav" id="nav">
+    <a class="nav-brand" href="index.html" aria-label="Shell Strike home"><img src="assets/logo.png" alt="Shell Strike logo" /></a>
+    <nav class="nav-links" id="navLinks" aria-label="Main navigation">
+      <a href="/">Home</a><a href="/staff">Staff</a><a href="/seasons">Past seasons</a><a href="/leaderboard">Leaderboard</a><a href="/apply">Staff application</a><a href="/tickets">Tickets / reports</a><a href="/match-stats" aria-current="page">Match stats</a>
+    </nav>
+    <div class="nav-actions"><a class="nav-cta" href="https://discord.gg/shell-strike-ranked-1470482329075060831" target="_blank" rel="noopener noreferrer">Enter the arena <span>↗</span></a><button class="menu-toggle" id="menuToggle" aria-label="Open navigation" aria-expanded="false">☰</button></div>
+  </header>
+  <main id="top">
+    <div class="page-heading"><span class="section-kicker">Shell Strike / Match archive</span><h1 class="hero-title"><span class="solid">MATCH</span><span class="outline">STATS.</span></h1><p class="intro-copy">Every game has a story. Pick a season and game number to revisit the King of the Court match statistics.</p></div>
+    <section class="archive-shell" aria-label="Match statistics archive">
+      <div class="archive-topline"><span>Historical database / <strong>KOTC archive</strong></span><span>SEASON SELECT // GAME LOOKUP</span></div>
+      <form class="selector-panel" id="lookupForm">
+        <div class="field"><label for="seasonSelect">Season</label><select id="seasonSelect" required><option value="1">Season 01</option><option value="2">Season 02</option><option value="3">Season 03</option><option value="4">Season 04</option></select></div>
+        <div class="field"><label for="gameNumber">Game number</label><input id="gameNumber" type="number" min="1" step="1" placeholder="Enter game number" required /></div>
+        <button class="button" id="loadButton" type="submit">Find match <span>↗</span></button>
+      </form>
+      <div class="result-meta"><h2 class="result-title" id="resultTitle">Match <span>preview.</span></h2><span class="result-state" id="resultState">AWAITING SELECTION</span></div>
+      <div class="viewer" id="viewer" aria-live="polite">
+        <div class="viewer-placeholder" id="placeholder"><div class="placeholder-icon"><span>✳</span></div><h3>Select a match to begin</h3><p>Your match stats image will appear here. Choose a season, enter the game number, and hit Find match.</p></div>
+        <img id="statsImage" alt="Shell Strike match statistics" />
+      </div>
+      <div class="result-actions"><a class="button" id="openImage" href="#" target="_blank" rel="noopener noreferrer">Open full image ↗</a><a class="button" id="downloadImage" href="#" download>Download image ↓</a></div>
+      <p class="hint"><b>Archive note:</b> Season 04 onward stores a Discord message link with the game record. Earlier seasons use archived raw KOTC statistics, so those images may need to be generated from the archive data by the server.</p>
+    </section>
+  </main>
+  <footer class="footer"><a class="footer-brand" href="index.html" aria-label="Shell Strike home"><img src="assets/logo.png" alt="Shell Strike logo" loading="lazy" /></a><span>Built and Managed by skizor04. © <span id="year"></span> Shell Strike.</span><div class="footer-links"><a href="/">Home</a><a href="https://discord.gg/shell-strike-ranked-1470482329075060831">Discord ↗</a></div></footer>
+  <script>
+    (()=>{
+      // The page expects a same-origin backend endpoint. Keep Discord credentials server-side.
+      const API_ENDPOINT='https://YOUR-RAILWAY-DOMAIN/api/match-stats';
+      const loader=document.getElementById('ssLoader'),progress=document.getElementById('ssLoaderProgress');let dismissed=false;
+      function dismissLoader(){if(!loader||dismissed)return;dismissed=true;const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;const duration=reduced?400:2600;if(progress){progress.style.animation='none';progress.style.width='0';void progress.offsetWidth;progress.style.transition=`width ${duration}ms cubic-bezier(.65,0,.35,1)`;requestAnimationFrame(()=>progress.style.width='100%')}setTimeout(()=>{loader.classList.add('is-done')},duration+80)}
+      if(document.readyState==='complete')dismissLoader();else addEventListener('load',dismissLoader,{once:true});setTimeout(dismissLoader,4500);
+      const nav=document.getElementById('nav');const updateNav=()=>nav.classList.toggle('scrolled',scrollY>30);addEventListener('scroll',updateNav,{passive:true});updateNav();
+      const toggle=document.getElementById('menuToggle'),links=document.getElementById('navLinks');toggle.addEventListener('click',()=>{links.classList.toggle('open');const open=links.classList.contains('open');toggle.textContent=open?'×':'☰';toggle.setAttribute('aria-expanded',String(open))});links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{links.classList.remove('open');toggle.textContent='☰';toggle.setAttribute('aria-expanded','false')}));
+      document.getElementById('year').textContent=new Date().getFullYear();
+      const form=document.getElementById('lookupForm'),season=document.getElementById('seasonSelect'),game=document.getElementById('gameNumber'),button=document.getElementById('loadButton'),viewer=document.getElementById('viewer'),img=document.getElementById('statsImage'),state=document.getElementById('resultState'),title=document.getElementById('resultTitle'),placeholder=document.getElementById('placeholder'),openLink=document.getElementById('openImage'),downloadLink=document.getElementById('downloadImage');
+      function showMessage(heading,message,isError=false){img.removeAttribute('src');viewer.classList.remove('has-image');placeholder.style.display='block';placeholder.innerHTML=`<div class="placeholder-icon"><span>${isError?'!':'✳'}</span></div><h3>${heading}</h3><p class="${isError?'viewer-error':''}">${message}</p>`;openLink.classList.remove('visible');downloadLink.classList.remove('visible')}
+      form.addEventListener('submit',async event=>{event.preventDefault();const s=Number(season.value),g=Number(game.value);if(!Number.isInteger(g)||g<1)return;button.disabled=true;button.textContent='Searching…';state.textContent='RETRIEVING MATCH';title.innerHTML=`Season ${String(s).padStart(2,'0')} / <span>Game ${g}.</span>`;showMessage('Searching the archive','Checking the match record…');
+        try{const response=await fetch(`${API_ENDPOINT}?season=${encodeURIComponent(s)}&game=${encodeURIComponent(g)}`,{headers:{Accept:'application/json'}});if(!response.ok){let detail='No match image was returned for this selection.';try{const body=await response.json();if(body.detail||body.error)detail=body.detail||body.error}catch{}throw new Error(detail)}const data=await response.json();if(!data.image_url)throw new Error(data.error||'The server did not return an image URL.');img.onload=()=>{viewer.classList.add('has-image');state.textContent='MATCH LOADED';openLink.href=data.image_url;downloadLink.href=data.image_url;openLink.classList.add('visible');downloadLink.classList.add('visible');};img.onerror=()=>{state.textContent='IMAGE ERROR';showMessage('Could not display image','The server returned an image URL that could not be loaded.',true)};img.src=data.image_url;
+        }catch(error){state.textContent='LOOKUP FAILED';showMessage('Match unavailable',error.message||'Could not reach the match archive. Please try again.',true)}finally{button.disabled=false;button.innerHTML='Find match <span>↗</span>'}
+      });
+    })();
+  </script>
+</body>
+</html>
